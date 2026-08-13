@@ -11,6 +11,10 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- 动漫背景轮播 -->
+  <div class="bg-slideshow" id="bgSlideshow" aria-hidden="true"></div>
+  <div class="bg-overlay" aria-hidden="true"></div>
+
   <!-- 导航栏 -->
   <header class="header" id="header">
     <nav class="nav container">
@@ -32,8 +36,7 @@
   <main>
     <!-- 首页 Hero -->
     <section class="hero" id="home">
-      <div class="hero-bg"></div>
-      <div class="container hero-content">
+      <div class="container hero-content glass-card">
         <p class="hero-greeting">你好，我是</p>
         <h1 class="hero-name">你的名字</h1>
         <p class="hero-title">全栈开发者 · 创意设计师</p>
@@ -52,17 +55,17 @@
     <!-- 简介 -->
     <section class="about section" id="about">
       <div class="container">
-        <div class="section-header">
+        <div class="section-header glass-card glass-card--compact">
           <span class="section-tag">About</span>
           <h2 class="section-title">关于我</h2>
         </div>
         <div class="about-grid">
           <div class="about-avatar">
-            <div class="avatar-placeholder">
+            <div class="avatar-placeholder glass-card">
               <span>头像</span>
             </div>
           </div>
-          <div class="about-content">
+          <div class="about-content glass-card">
             <p class="about-intro">
               我是一名充满热情的开发者，拥有多年 Web 开发经验。擅长将复杂的需求转化为简洁优雅的解决方案，注重代码质量与用户体验。
             </p>
@@ -88,13 +91,13 @@
     <!-- 作品展示 -->
     <section class="works section" id="works">
       <div class="container">
-        <div class="section-header">
+        <div class="section-header glass-card glass-card--compact">
           <span class="section-tag">Works</span>
           <h2 class="section-title">作品展示</h2>
           <p class="section-desc">精选项目与创作</p>
         </div>
         <div class="works-grid">
-          <article class="work-card">
+          <article class="work-card glass-card">
             <div class="work-image">
               <div class="work-image-placeholder" style="--hue: 200">
                 <span>01</span>
@@ -115,7 +118,7 @@
             </div>
           </article>
 
-          <article class="work-card">
+          <article class="work-card glass-card">
             <div class="work-image">
               <div class="work-image-placeholder" style="--hue: 280">
                 <span>02</span>
@@ -136,7 +139,7 @@
             </div>
           </article>
 
-          <article class="work-card">
+          <article class="work-card glass-card">
             <div class="work-image">
               <div class="work-image-placeholder" style="--hue: 30">
                 <span>03</span>
@@ -163,17 +166,17 @@
     <!-- 联系 -->
     <section class="contact section" id="contact">
       <div class="container">
-        <div class="section-header">
+        <div class="section-header glass-card glass-card--compact">
           <span class="section-tag">Contact</span>
           <h2 class="section-title">联系我</h2>
           <p class="section-desc">有项目合作或交流想法？欢迎联系</p>
         </div>
         <div class="contact-links">
-          <a href="mailto:your@email.com" class="contact-item">
+          <a href="mailto:your@email.com" class="contact-item glass-card">
             <span class="contact-label">Email</span>
             <span class="contact-value">your@email.com</span>
           </a>
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="contact-item">
+          <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="contact-item glass-card">
             <span class="contact-label">GitHub</span>
             <span class="contact-value">github.com/username</span>
           </a>
@@ -184,7 +187,7 @@
 
   <footer class="footer">
     <div class="container">
-      <p>&copy; 2026 个人网站. All rights reserved.</p>
+      <p class="glass-card glass-card--compact">&copy; 2026 个人网站. All rights reserved.</p>
     </div>
   </footer>
 

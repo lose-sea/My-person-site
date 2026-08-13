@@ -1,3 +1,45 @@
+// 动漫背景轮播
+// 将喜欢的动漫壁纸放入 assets/backgrounds/ 并在此列出路径，或直接替换下方 URL
+const ANIME_BACKGROUNDS = [
+  'assets/backgrounds/demon_tanjiro.png',
+  'assets/backgrounds/frieren.jpeg',
+  'assets/backgrounds/gojo_satoru.jpg',
+  'assets/backgrounds/gojo.jpg',
+  'assets/backgrounds/jujutsu_megumi.png',
+];
+
+const SLIDE_INTERVAL = 6000;
+
+function initBackgroundSlideshow() {
+  const container = document.getElementById('bgSlideshow');
+  if (!container || ANIME_BACKGROUNDS.length === 0) return;
+
+  ANIME_BACKGROUNDS.forEach((url) => {
+    const img = new Image();
+    img.src = url;
+  });
+
+  ANIME_BACKGROUNDS.forEach((url, index) => {
+    const slide = document.createElement('div');
+    slide.className = `bg-slide${index === 0 ? ' active' : ''}`;
+    slide.style.backgroundImage = `url("${url}")`;
+    container.appendChild(slide);
+  });
+
+  const slides = container.querySelectorAll('.bg-slide');
+  if (slides.length <= 1) return;
+
+  let current = 0;
+
+  setInterval(() => {
+    slides[current].classList.remove('active');
+    current = (current + 1) % slides.length;
+    slides[current].classList.add('active');
+  }, SLIDE_INTERVAL);
+}
+
+initBackgroundSlideshow();
+
 // 移动端导航菜单
 const navToggle = document.getElementById('navToggle');
 const navMenu = document.getElementById('navMenu');

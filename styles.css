@@ -2,15 +2,19 @@
 :root {
   --bg-primary: #0a0a0f;
   --bg-secondary: #12121a;
-  --bg-card: #16161f;
+  --bg-card: rgba(22, 22, 31, 0.45);
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-bg-hover: rgba(255, 255, 255, 0.12);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-blur: 20px;
   --text-primary: #f0f0f5;
-  --text-secondary: #9898a8;
-  --text-muted: #5c5c6e;
+  --text-secondary: #d4d4de;
+  --text-muted: #a8a8b8;
   --accent: #6ee7b7;
   --accent-dim: rgba(110, 231, 183, 0.15);
   --accent-hover: #34d399;
-  --border: rgba(255, 255, 255, 0.08);
-  --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  --border: rgba(255, 255, 255, 0.12);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
   --radius: 12px;
   --radius-lg: 20px;
   --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -35,6 +39,67 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
+  position: relative;
+}
+
+/* ===== Background Slideshow ===== */
+.bg-slideshow {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+}
+
+.bg-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transform: scale(1.06);
+  transition: opacity 1.8s ease-in-out, transform 8s ease-out;
+}
+
+.bg-slide.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.bg-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(10, 10, 15, 0.55) 0%, rgba(10, 10, 15, 0.75) 100%),
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(110, 231, 183, 0.08), transparent);
+  pointer-events: none;
+}
+
+/* ===== Glass Card ===== */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.glass-card--compact {
+  display: inline-block;
+  border-radius: var(--radius);
+  padding: 1rem 1.5rem;
+}
+
+.section-header.glass-card--compact {
+  display: block;
+  margin-bottom: 3rem;
+}
+
+.footer p.glass-card--compact {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
 }
 
 a {
@@ -69,8 +134,9 @@ img {
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(10, 10, 15, 0.8);
-  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid transparent;
   transition: var(--transition);
 }
@@ -156,18 +222,15 @@ img {
 }
 
 .hero-bg {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 80% 50% at 50% -20%, var(--accent-dim), transparent),
-    radial-gradient(ellipse 60% 40% at 100% 50%, rgba(110, 231, 183, 0.05), transparent),
-    radial-gradient(ellipse 60% 40% at 0% 80%, rgba(110, 231, 183, 0.05), transparent);
-  pointer-events: none;
+  display: none;
 }
 
 .hero-content {
   position: relative;
   text-align: center;
+  max-width: 640px;
+  padding: 3rem 2.5rem;
+  margin: 0 auto;
 }
 
 .hero-greeting {
@@ -230,7 +293,10 @@ img {
 }
 
 .btn-outline {
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: var(--text-primary);
 }
 
@@ -291,10 +357,6 @@ img {
 }
 
 /* ===== About ===== */
-.about {
-  background: var(--bg-secondary);
-}
-
 .about-grid {
   display: grid;
   grid-template-columns: 280px 1fr;
@@ -309,14 +371,15 @@ img {
 
 .avatar-placeholder {
   aspect-ratio: 1;
-  background: linear-gradient(135deg, var(--accent-dim), rgba(110, 231, 183, 0.05));
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--text-muted);
   font-size: 0.9rem;
+}
+
+.about-content {
+  padding: 2rem 2.5rem;
 }
 
 .about-intro {
@@ -344,8 +407,10 @@ img {
 
 .skills-list li {
   padding: 0.4rem 0.9rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
   border-radius: 999px;
   font-size: 0.85rem;
   color: var(--text-secondary);
@@ -360,17 +425,15 @@ img {
 }
 
 .work-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
   overflow: hidden;
   transition: var(--transition);
 }
 
 .work-card:hover {
-  border-color: rgba(110, 231, 183, 0.3);
+  background: var(--glass-bg-hover);
+  border-color: rgba(110, 231, 183, 0.35);
   transform: translateY(-4px);
-  box-shadow: var(--shadow);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 }
 
 .work-image {
@@ -450,10 +513,6 @@ img {
 }
 
 /* ===== Contact ===== */
-.contact {
-  background: var(--bg-secondary);
-}
-
 .contact-links {
   display: flex;
   flex-direction: column;
@@ -465,15 +524,13 @@ img {
   display: flex;
   flex-direction: column;
   padding: 1.25rem 1.5rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
   transition: var(--transition);
 }
 
 .contact-item:hover {
   border-color: var(--accent);
-  background: var(--accent-dim);
+  background: var(--glass-bg-hover);
+  transform: translateY(-2px);
 }
 
 .contact-label {
@@ -493,7 +550,6 @@ img {
 /* ===== Footer ===== */
 .footer {
   padding: 2rem 0;
-  border-top: 1px solid var(--border);
   text-align: center;
 }
 
@@ -513,7 +569,9 @@ img {
     top: 4rem;
     left: 0;
     right: 0;
-    background: var(--bg-secondary);
+    background: rgba(18, 18, 26, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     flex-direction: column;
     padding: 1.5rem;
     gap: 0;
@@ -553,6 +611,14 @@ img {
 
   .nav-toggle.open span:nth-child(3) {
     transform: rotate(-45deg) translate(5px, -5px);
+  }
+
+  .hero-content {
+    padding: 2rem 1.5rem;
+  }
+
+  .about-content {
+    padding: 1.5rem;
   }
 
   .about-grid {
