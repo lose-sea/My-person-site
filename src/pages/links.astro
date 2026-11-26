@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ConstellationLinks from '../components/ConstellationLinks.tsx';
+import { SITE_PROFILE } from '../data/profile';
+---
+
+<BaseLayout
+  title={`星月友链图谱 · ${SITE_PROFILE.brand}`}
+  description="致敬 zyx322.xyz 的交互式星月友链图谱与深空星座群，收录实验室学长博客、iOS 生态与常用开发工具"
+  currentPath="/links"
+>
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-12">
+    <div class="space-y-3 mb-10 reveal">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full liquid-glass text-xs font-mono text-[var(--accent)]">
+        <span>CONSTELLATION LINKS</span>
+        <span class="opacity-40">·</span>
+        <span>星月图谱 × 深空星座</span>
+      </div>
+      <h1 class="font-serif text-3xl sm:text-5xl font-bold text-[var(--text-primary)] leading-tight">
+        星月友链与常用传送门
+      </h1>
+      <p class="text-sm sm:text-base text-[var(--text-secondary)] max-w-2xl leading-relaxed">
+        每一颗亮起的星，都是陪伴我学习 iOS、写代码、找灵感的同路人与文档灯塔。支持在「☽ 星月图谱」与「✦ 星座星群」两种深空视图间自由切换。
+      </p>
+    </div>
+
+    <ConstellationLinks client:load />
+
+    <!-- Exchange Friend Links Block (zyx322.xyz signature bottom card) -->
+    <div class="mt-14 bento-card p-6 sm:p-8 specular-edge reveal">
+      <h2 class="font-serif text-xl font-bold text-[var(--text-primary)] mb-4">交换友链</h2>
+      <blockquote class="pl-4 py-2 border-l-4 border-[var(--accent)] text-sm text-[var(--text-secondary)] space-y-2 leading-relaxed">
+        <p>欢迎热爱编程、iOS / 客户端开发、独立设计与记录生活的同学与博主互换友链！</p>
+        <p class="font-mono text-xs text-[var(--text-muted)]">
+          本站名称：{SITE_PROFILE.brand} · 站点描述：大二 iOS 学生的个人技术实验室、学习路线与生活志 · GitHub：github.com/lose-sea
+        </p>
+        <p class="text-xs text-[var(--text-muted)]">
+          需要新增友链时，只需编辑仓库中的 <code class="px-1.5 py-0.5 rounded bg-[var(--bg-pill)]">src/data/links.ts</code> 即可自动点亮一颗新的星辰。
+        </p>
+      </blockquote>
+    </div>
+  </section>
+</BaseLayout>

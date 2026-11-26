@@ -1,0 +1,164 @@
+---
+import '../styles/global.css';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import StarfieldCanvas from '../components/StarfieldCanvas.astro';
+import QuickSearch from '../components/QuickSearch.tsx';
+import { SITE_PROFILE } from '../data/profile';
+import { ANIME_WALLPAPERS } from '../data/life';
+import { withBase } from '../utils/paths';
+
+interface Props {
+  title?: string;
+  description?: string;
+  currentPath?: string;
+}
+
+const {
+  title = `${SITE_PROFILE.brand} · ${SITE_PROFILE.brandSub}`,
+  description = SITE_PROFILE.heroIntro,
+  currentPath = '/',
+} = Astro.props;
+
+const wallpaperUrls = ANIME_WALLPAPERS.map((w) => ({
+  ...w,
+  resolvedSrc: withBase(w.src),
+}));
+---
+
+<!doctype html>
+<html lang="zh-CN" data-theme="dark" data-atmosphere="anime">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Prevent theme/atmosphere flash before paint -->
+    <script is:inline>
+      (function () {
+        try {
+          const theme = localStorage.getItem('lose-sea-theme') || 'dark';
+          const atmosphere = localStorage.getItem('lose-sea-atmosphere-v2') || 'anime';
+          document.documentElement.setAttribute('data-theme', theme);
+          document.documentElement.setAttribute('data-atmosphere', atmosphere);
+        } catch (_) {}
+      })();
+    </script>
+  </head>
+
+  <body class="selection:bg-violet-500/30">
+    <!-- Layer 1: Deep Starry Lab Canvas (tommywutong.cn inspiration) -->
+    <StarfieldCanvas />
+
+    <!-- Layer 2: Anime Wallpaper Slideshow (default ON: existing repo + zyx322.xyz liquid glass) -->
+    <div id="anime-atmosphere-layer" class="fixed inset-0 z-[1] pointer-events-none transition-opacity duration-700 opacity-100">
+      {wallpaperUrls.map((wp, idx) => (
+        <div
+          class:list={['anime-bg-slide', idx === 0 && 'active']}
+          data-wallpaper-id={wp.id}
+          style={`background-image: url("${wp.resolvedSrc}");`}
+        />
+      ))}
+      <div
+        class="absolute inset-0 pointer-events-none"
+        style="background: var(--anime-scrim);"
+      />
+    </div>
+
+    <!-- Subtle ambient aurora gradient blobs -->
+    <div class="fixed inset-0 z-[2] pointer-events-none overflow-hidden" aria-hidden="true">
+      <div class="absolute -top-40 left-1/4 w-[520px] h-[520px] rounded-full blur-[130px] opacity-20 dark:opacity-25 bg-violet-500/50"></div>
+      <div class="absolute top-1/3 -right-32 w-[460px] h-[460px] rounded-full blur-[130px] opacity-15 bg-sky-400/50"></div>
+      <div class="absolute bottom-0 left-1/3 w-[500px] h-[400px] rounded-full blur-[140px] opacity-15 bg-emerald-400/40"></div>
+    </div>
+
+    <!-- Navigation -->
+    <Navbar currentPath={currentPath} wallpapers={wallpaperUrls} />
+
+    <!-- Quick Search Modal (Cmd/Ctrl + K) -->
+    <QuickSearch client:load baseUrl={import.meta.env.BASE_URL} />
+
+    <!-- Main Content -->
+    <main class="relative z-10 min-h-[75vh]">
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <Footer />
+
+    <!-- Global interactivity: Atmosphere & Wallpaper Slideshow + Scroll Reveal -->
+    <script is:inline>
+      (function () {
+        const html = document.documentElement;
+        const animeLayer = document.getElementById('anime-atmosphere-layer');
+        const slides = Array.from(document.querySelectorAll('.anime-bg-slide'));
+        let activeIndex = 0;
+        let slideTimer = null;
+
+        function getPinnedWallpaper() {
+          try {
+            return localStorage.getItem('lose-sea-wallpaper') || 'auto';
+          } catch (_) {
+            return 'auto';
+          }
+        }
+
+        function setSlideByIndex(idx) {
+          slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+          activeIndex = idx;
+        }
+
+        function syncAtmosphere() {
+          const mode = html.getAttribute('data-atmosphere') || 'anime';
+          if (animeLayer) {
+            animeLayer.style.opacity = mode === 'anime' ? '1' : '0';
+          }
+          if (slideTimer) {
+            clearInterval(slideTimer);
+            slideTimer = null;
+          }
+          if (mode === 'anime' && slides.length > 0) {
+            const pinned = getPinnedWallpaper();
+            const found = pinned !== 'auto'
+              ? slides.findIndex((s) => s.getAttribute('data-wallpaper-id') === pinned)
+              : -1;
+            if (pinned !== 'auto' && found >= 0) {
+              setSlideByIndex(found);
+            } else {
+              setSlideByIndex(activeIndex % slides.length);
+              slideTimer = setInterval(() => {
+                setSlideByIndex((activeIndex + 1) % slides.length);
+              }, 7500);
+            }
+          }
+        }
+
+        window.addEventListener('lose-sea:atmosphere-change', syncAtmosphere);
+        syncAtmosphere();
+
+        // Scroll Reveal Observer
+        const revealEls = document.querySelectorAll('.reveal');
+        if ('IntersectionObserver' in window && revealEls.length > 0) {
+          const io = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add('is-visible');
+                  io.unobserve(entry.target);
+                }
+              });
+            },
+            { threshold: 0.08, rootMargin: '0px 0px -30px 0px' }
+          );
+          revealEls.forEach((el) => io.observe(el));
+        } else {
+          revealEls.forEach((el) => el.classList.add('is-visible'));
+        }
+      })();
+    </script>
+  </body>
+</html>

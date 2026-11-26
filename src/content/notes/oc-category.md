@@ -1,0 +1,225 @@
+---
+title: "Objective-C 类别（Category）和扩展（Extension）"
+category: "oc-ios"
+categoryLabel: "Objective-C & iOS"
+subTag: "OC 基础语法"
+date: "2026-03-15"
+readTime: "5 分钟"
+summary: "辨析 Category 运行时动态合并方法列表与 Extension 编译期声明私有属性的本质区别。"
+csdnUrl: "https://blog.csdn.net/for_ever_love__/article/details/159050871"
+featured: false
+---
+
+## 类别的定义与实现
+
+Objective-C的动态允许使用类别为现有的类添加系新方法, 并且不需要创建子类,不需要访问原有类的源代码, 
+
+通过使用类别即可动态地为现有类添加新方法, 而且可以将类定义模块化的分布到多个相关的文件中. 
+
+类别同样由接口和实现部分组成, 接口部分的语法如下: 
+
+```objc
+@interface 已有类 (类别名) 
+    // 方法定义 
+    ...
+@end
+```
+
+这个语法格式虽然看上去很像在定义类,但是在类名后有一个圆括号, 而且圆括号中带一个类别名. 
+
+定义类别名的语法与定义类的语法存在如下差异
+
+> 1. 定义类时使用的类名必须是该项目中没有的类, 而定义类别时使用的类名必须是已有的类.  
+> 2. 定义类别时必须使用圆括号来包含类别名. 
+> 3. 类别中通常只定义方法 
+
+类别实现部分的语法如下; 
+
+```objc
+@implementation 已有类 (类别名) 
+   // 方法实现
+    ...
+@end 
+```
+
+
+```objc
+@interface NSNumber (fk)
+// 在类别中定义4个方法
+- (NSNumber*) add: (double) num2;
+- (NSNumber*) substract: (double) num2;
+- (NSNumber*) multiply: (double) num2;
+- (NSNumber*) divde: (double) num2;
+ @end
+
+@implementation NSNumber (fk)
+- (NSNumber*) add: (double) num2 {
+    return [NSNumber numberWithDouble: [self doubleValue] + num2];
+}
+- (NSNumber*) substract:(double)num2 {
+    return [NSNumber numberWithDouble: [self doubleValue] - num2];
+}
+- (NSNumber*) multiply:(double)num2 {
+    return [NSNumber numberWithDouble: [self doubleValue] * num2];
+}
+- (NSNumber*) divde:(double)num2 {
+    return [NSNumber numberWithDouble: [self doubleValue] / num2];
+}
+@end
+
+int main(int argc, char* argv[]) {
+    @autoreleasepool {
+        NSNumber* myNum = [NSNumber numberWithInt: 3];
+        NSNumber* add = [myNum add: 2.4];
+        NSLog(@"%@", add);
+        NSNumber* substract = [myNum substract: 2.4];
+        NSLog(@"%@", substract);
+    }
+    return 0;
+}
+```
+
+输出: 
+
+```objc
+5.4
+0.6000000000000001
+```
+
+
+上面为 NSNumber 定义了fk 类别, 并在测试程序中使用 NSNumber 类，该类的实例就会具有add:、substract:、multiply:和 divide:方法，这就实现了对原有 NSNumber 类的动态扩展。
+
+虽然类别可以重写原有类中的方法,但通常并不推荐这么做,如果需要重写原有类的方法，更好的建议是通过原有类派生子类，然后在子类中重写父类原有的方法。关于类别，还有如下两点说明。
+
+1. 通过类别为指定类添加新方法之后，这个新方法不仅会影响NSNumber 类，还会影响NSNumber 类的所有子类，每个子类都会获取类别扩展的方法。
+
+2. 可根据需要为一个类定义多个类别，不同的类别都可对原有的类增加方法定义。
+
+   
+
+类别是 Obiective-℃中一个非常重要的知识，它通常有如下3种用法。
+
+1. 利用类别对类进行模块化设计。
+2. 使用类别来调用私有方法。
+3. 使用类别来实现非正式协议。
+
+## 利用类别对类进行模块化设计
+
+在前面类的设计中，可以使用*.h文件来定义类接口部分，使用*.m文件来定义类实现部但不能将类实现部分分布到多个.m 文件中。当某个类非常大时，如果将该类的所有实现代码放在一个文件中,将会导致这个文件非常大，以至于维护起来非常困难。如果需要将一个较大的类分模块设计，使用类别是一个不错的选择。
+
+## 使用类别来调用私有化方法
+
+除了使用performSelection: 方法来动态调用那些私有方法之外, 还可以通过类别来定义前向引用, 从而实现对私有方法的调用
+
+```objc
+@implementation FKItem
+@synthesize price;
+// 实现接口部分定义的方法
+- (void)info
+{
+    NSLog(@"这是一个普通的方法");
+}
+
+// 类实现部分新增的方法，相当于私有方法
+- (double)calDiscount:(double)discount
+{
+    return self.price * discount;
+}
+@end
+
+
+int main(int argc, char * argv[])
+{
+    @autoreleasepool {
+        FKItem* item = [[FKItem alloc] init];
+        item.price = 109;
+        [item info];
+        NSLog(@"物品打折的价格为：%g", [item calDiscount:.75]);
+    }
+}
+```
+
+这样会编译器会提示: FKItem对象不能调用calDiscount: 方法(Objective-C编译器习惯把方法称为selector)
+
+为了能在程序中正常调用calDiscount: 方法, 程序可以在该main() 函数前加如下类别定义 
+
+```objc
+@interface FKItem (fk) 
+    // 在类别中声明 calDiscount: 方法 
+- (double) calDiscount: (double) discount: 
+@end
+```
+
+这样在 main()函数前定义了该类别之后，FKItem的类别中自然就增加了calDiscount.方法，但类别的方法并不强制程序去实现它--实际上，FKItem类的实现部分已经实现了calDiscount:方法。在该类别中增加定义 calDiscount:方法仅仅是告诉编译器，在 FKItem 类中可以包含 calDiscount:方法，这样编译器就不再提示上面所示的错误了。
+
+## 扩展
+
+ 扩展与类别相似, 相当于匿名类别, 定义扩展的语法格式如下
+
+```objc
+@interface 已有类 () {
+    实例变量
+}
+// 方法定义
+.. 
+@end
+```
+
+从上面的语法格式中可以看出，扩展相当于定义一个匿名的类别。但就用法来看，类别通常有单独的 *.h 和 *.m 文件，扩展则用于临时对某个类的接口进行扩展，类实现部分同时实现类接口部分定义的方法和扩展中定义的方法。
+
+在定义类的扩展时，可以额外增加实例变量，也可以使用 @property 来合成属性 (包括setter、getter 方法和对应的成员变量), 但**定义类的类别时，则不允许额外定义实例变量，也不能用 @property 合成属性。**
+
+```objc
+#import <Foundation/Foundation.h>
+
+@interface FKCar : NSObject
+// 品牌属性
+@property (nonatomic, copy) NSString* brand;
+// 型号属性
+@property (nonatomic, copy) NSString* model;
+// 无参drive方法
+- (void)drive;
+@end 
+
+// 定义FKCar的类扩展
+@interface FKCar ()
+// 颜色属性
+@property (nonatomic, copy) NSString* color;
+// 带参drive方法
+- (void)drive:(NSString*)owner;
+@end 
+
+    
+@implementation FKCar
+// 实现无参 drive 方法
+- (void)drive
+{
+    NSLog(@"%@汽车正在路上奔驰", self);
+}
+// 实现带参 drive 方法
+- (void)drive:(NSString*)owner
+{
+    NSLog(@"%@正驾驶%@汽车在路上奔驰", owner, self);
+}
+- (NSString*)description
+{
+    return [NSString stringWithFormat:@"<FK[_brand=%@, _model=%@, _color=%@]>", 
+            self.brand, self.model, self.color];
+}
+@end
+```
+
+在上面的程序中，可以使用点语法来访问 color 属性，这个 color 属性是在扩展部分定义的。除此之外，也可调用 FKCar 对象的 drive: 方法，这个方法去也是在扩展部分定义的
+
+## 类别和扩展的区别
+
+
+| 对比项               | Category           | Extension          |
+| -------------------- | ------------------ | ------------------ |
+| 是否有名字           | 有                 | 没有               |
+| 是否可以添加方法     | 可以               | 可以               |
+| 是否可以添加属性     | 只能声明           | 可以实现           |
+| 是否可以添加成员变量 | 不可以             | 可以               |
+| 是否需要类源码       | 不需要             | 需要               |
+| 编译/运行时          | 运行时             | 编译时             |
+| 常见用途             | 扩展方法、模块拆分 | 私有属性、私有方法 |

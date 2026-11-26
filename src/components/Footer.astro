@@ -1,0 +1,161 @@
+---
+import { SITE_PROFILE } from '../data/profile';
+import { withBase } from '../utils/paths';
+---
+
+<footer class="relative z-10 mt-24 pt-16 pb-10 overflow-hidden">
+  <!-- Organic layered constellation wave (tommywutong.cn inspiration) -->
+  <div class="absolute inset-x-0 top-0 pointer-events-none select-none opacity-65" aria-hidden="true">
+    <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-20 sm:h-28 preserve-3d">
+      <path
+        d="M0 78C210 18 420 112 720 64C1020 16 1230 96 1440 48V120H0V78Z"
+        fill="url(#footerWaveGrad)"
+        fill-opacity="0.18"
+      />
+      <path
+        d="M0 90C280 34 520 118 820 72C1090 30 1280 86 1440 62V120H0V90Z"
+        fill="url(#footerWaveGrad2)"
+        fill-opacity="0.16"
+      />
+      <defs>
+        <linearGradient id="footerWaveGrad" x1="0" y1="0" x2="1440" y2="120" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#8b7bff" />
+          <stop offset="0.5" stop-color="#56c7ff" />
+          <stop offset="1" stop-color="#6ee7b7" />
+        </linearGradient>
+        <linearGradient id="footerWaveGrad2" x1="0" y1="60" x2="1440" y2="120" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#56c7ff" />
+          <stop offset="1" stop-color="#8b7bff" />
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+
+  <div class="relative max-w-6xl mx-auto px-4 sm:px-6 pt-10">
+    <!-- Main Structured Footer Card -->
+    <div class="bento-card p-6 sm:p-9 specular-edge">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 pb-8 border-b border-[var(--border-subtle)]">
+        <!-- Brand Column -->
+        <div class="md:col-span-5 space-y-3">
+          <div class="flex items-center gap-3">
+            <img
+              src={SITE_PROFILE.avatarUrl}
+              alt={SITE_PROFILE.brand}
+              class="w-10 h-10 rounded-full object-cover ring-1 ring-white/25"
+              loading="lazy"
+            />
+            <div>
+              <div class="font-serif text-lg font-bold text-[var(--text-primary)]">{SITE_PROFILE.brand}</div>
+              <div class="text-xs font-mono text-[var(--text-muted)]">{SITE_PROFILE.brandSub}</div>
+            </div>
+          </div>
+          <p class="text-sm text-[var(--text-secondary)] max-w-sm leading-relaxed">
+            大二 iOS 学生的个人技术实验室与成长手记。从 C 语言与 3G 实验室起步，记录 Objective-C、UIKit、Python 与 Swift 的每一次跃迁。
+          </p>
+          <p class="text-xs font-serif italic text-[var(--text-muted)]">
+            “{SITE_PROFILE.tagline}”
+          </p>
+        </div>
+
+        <!-- Column 1: Explore -->
+        <div class="md:col-span-2 space-y-2.5">
+          <h3 class="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)]">浏览导航</h3>
+          <ul class="space-y-2 text-sm text-[var(--text-secondary)]">
+            <li><a href={withBase('/')} class="hover:text-[var(--accent)] transition-colors">首页实验室</a></li>
+            <li><a href={withBase('/roadmap')} class="hover:text-[var(--accent)] transition-colors">学习路线</a></li>
+            <li><a href={withBase('/projects')} class="hover:text-[var(--accent)] transition-colors">iOS 项目展厅</a></li>
+            <li><a href={withBase('/notes')} class="hover:text-[var(--accent)] transition-colors">C / OC / Python 笔记</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 2: Currently Learning -->
+        <div class="md:col-span-2 space-y-2.5">
+          <h3 class="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)]">正在深耕</h3>
+          <ul class="space-y-2 text-sm text-[var(--text-secondary)]">
+            <li><a href={withBase('/projects#mymusic')} class="hover:text-[var(--accent)] transition-colors">MyMusic 播放器</a></li>
+            <li><a href={withBase('/projects#spotify-player')} class="hover:text-[var(--accent)] transition-colors">Spotify 架构重制</a></li>
+            <li><a href={withBase('/roadmap#stage-architecture-swift')} class="hover:text-[var(--accent)] transition-colors">Swift 语言进阶</a></li>
+            <li><a href={withBase('/life')} class="hover:text-[var(--accent)] transition-colors">生活切片 & 随笔</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: External Portals -->
+        <div class="md:col-span-3 space-y-2.5">
+          <h3 class="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)]">在线阵地</h3>
+          <div class="flex flex-wrap gap-2 pt-0.5">
+            <a
+              href={SITE_PROFILE.socials.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="px-3 py-1.5 rounded-full text-xs font-medium bg-[var(--bg-pill)] border border-[var(--border-subtle)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all"
+            >
+              GitHub ↗
+            </a>
+            <a
+              href={SITE_PROFILE.socials.csdn}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="px-3 py-1.5 rounded-full text-xs font-medium bg-[var(--bg-pill)] border border-[var(--border-subtle)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all"
+            >
+              CSDN 博客 ↗
+            </a>
+            <a
+              href={SITE_PROFILE.socials.qzone}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="px-3 py-1.5 rounded-full text-xs font-medium bg-[var(--bg-pill)] border border-[var(--border-subtle)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all"
+            >
+              QQ 空间 ↗
+            </a>
+            <a
+              href={withBase('/links')}
+              class="px-3 py-1.5 rounded-full text-xs font-medium bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent)]/30 hover:brightness-110 transition-all"
+            >
+              ✦ 星月友链
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Uptime & Back-to-Top Capsule (zyx322 + tommywutong) -->
+      <div class="pt-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--text-muted)]">
+        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-1 font-mono">
+          <span>© 2026 {SITE_PROFILE.brand}</span>
+          <span class="opacity-40">·</span>
+          <span>已稳定运行 <strong id="site-uptime" class="text-[var(--text-secondary)] font-medium">计算中...</strong></span>
+        </div>
+
+        <button
+          type="button"
+          id="back-to-top-btn"
+          class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[var(--bg-pill)] border border-[var(--border-subtle)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all cursor-pointer"
+        >
+          <span>✦</span>
+          <span>回到顶部</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script is:inline>
+  (function () {
+    const uptimeEl = document.getElementById('site-uptime');
+    const founded = new Date('2026-08-13T00:00:00+08:00').getTime();
+
+    function tick() {
+      if (!uptimeEl) return;
+      const diff = Math.max(0, Date.now() - founded);
+      const days = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const mins = Math.floor((diff % 3600000) / 60000);
+      uptimeEl.textContent = `${days} 天 ${hours} 小时 ${mins} 分`;
+    }
+    tick();
+    setInterval(tick, 30000);
+
+    document.getElementById('back-to-top-btn')?.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  })();
+</script>

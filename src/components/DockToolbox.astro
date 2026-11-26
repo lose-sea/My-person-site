@@ -1,0 +1,119 @@
+---
+import { SITE_PROFILE } from '../data/profile';
+import { withBase } from '../utils/paths';
+
+const dockItems = [
+  {
+    label: '学习路线',
+    sub: 'C → OC → Swift',
+    href: withBase('/roadmap'),
+    external: false,
+    gradient: 'from-sky-400 to-blue-600',
+    icon: '🧭',
+  },
+  {
+    label: 'GitHub',
+    sub: 'lose-sea',
+    href: SITE_PROFILE.socials.github,
+    external: true,
+    gradient: 'from-slate-600 to-zinc-800',
+    icon: '⌘',
+  },
+  {
+    label: 'CSDN 博客',
+    sub: 'for_ever_love__',
+    href: SITE_PROFILE.socials.csdn,
+    external: true,
+    gradient: 'from-orange-400 to-rose-600',
+    icon: '✎',
+  },
+  {
+    label: 'QQ 空间',
+    sub: '生活碎片',
+    href: SITE_PROFILE.socials.qzone,
+    external: true,
+    gradient: 'from-amber-400 to-yellow-500',
+    icon: '★',
+  },
+  {
+    label: '星月友链',
+    sub: '关系图谱',
+    href: withBase('/links'),
+    external: false,
+    gradient: 'from-violet-500 to-fuchsia-600',
+    icon: '✦',
+  },
+];
+---
+
+<section class="max-w-4xl mx-auto px-4 sm:px-6 pt-8 pb-4 reveal">
+  <div class="text-center mb-6">
+    <span class="text-xs font-mono uppercase tracking-[0.22em] text-[var(--accent)]">
+      04 · QUICK DOCK
+    </span>
+    <h2 class="font-serif text-xl sm:text-2xl font-bold mt-1 text-[var(--text-primary)]">
+      快捷传送坞
+    </h2>
+  </div>
+
+  <!-- macOS Dock-style Liquid Glass Pill (zyx322.xyz inspiration) -->
+  <div class="flex justify-center">
+    <div class="inline-flex flex-wrap items-center justify-center gap-3 sm:gap-4 px-5 sm:px-7 py-4 rounded-[28px] liquid-glass border border-[var(--border-strong)]">
+      {dockItems.map((item) => (
+        <a
+          href={item.href}
+          target={item.external ? '_blank' : undefined}
+          rel={item.external ? 'noopener noreferrer' : undefined}
+          class="group flex flex-col items-center gap-1.5 w-16 sm:w-20 transition-transform duration-300 hover:-translate-y-2"
+        >
+          <div
+            class={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br ${item.gradient} flex items-center justify-center text-white text-xl shadow-lg ring-1 ring-white/25 transition-all duration-300 group-hover:scale-110 group-hover:shadow-violet-500/30`}
+          >
+            {item.icon}
+          </div>
+          <span class="text-[11px] font-medium text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">
+            {item.label}
+          </span>
+        </a>
+      ))}
+
+      <!-- Divider -->
+      <span class="hidden sm:block w-px h-10 bg-[var(--border-subtle)] mx-1"></span>
+
+      <!-- Instant Atmosphere Toggle Tile -->
+      <button
+        type="button"
+        id="dock-atmosphere-btn"
+        class="group flex flex-col items-center gap-1.5 w-16 sm:w-20 transition-transform duration-300 hover:-translate-y-2 cursor-pointer"
+      >
+        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-500 flex items-center justify-center text-white text-xl shadow-lg ring-1 ring-white/25 transition-all duration-300 group-hover:scale-110">
+          ☾
+        </div>
+        <span class="text-[11px] font-medium text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">
+          切换壁纸
+        </span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  document.getElementById('dock-atmosphere-btn')?.addEventListener('click', () => {
+    const html = document.documentElement;
+    const next = html.getAttribute('data-atmosphere') === 'anime' ? 'lab' : 'anime';
+    html.setAttribute('data-atmosphere', next);
+    try {
+      localStorage.setItem('lose-sea-atmosphere-v2', next);
+    } catch (_) {}
+    window.dispatchEvent(new CustomEvent('lose-sea:atmosphere-change'));
+    const label = document.getElementById('atmosphere-label');
+    const dot = document.getElementById('atmosphere-indicator');
+    if (label) label.textContent = next === 'anime' ? '动漫壁纸' : '星轨';
+    if (dot) {
+      dot.className =
+        next === 'anime'
+          ? 'w-2 h-2 rounded-full bg-emerald-400'
+          : 'w-2 h-2 rounded-full bg-violet-400';
+    }
+  });
+</script>

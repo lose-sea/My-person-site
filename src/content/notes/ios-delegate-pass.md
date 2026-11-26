@@ -1,0 +1,310 @@
+---
+title: "多界面传值的正向（属性传值）与反向（代理传值）"
+category: "oc-ios"
+categoryLabel: "Objective-C & iOS"
+subTag: "iOS UI 学习"
+date: "2026-04-26"
+readTime: "6 分钟"
+summary: "通过清晰示例对比属性传值、Protocol Delegate 反向传值、通知传值与单例传值的解耦思路。"
+csdnUrl: "https://blog.csdn.net/for_ever_love__/article/details/160448855"
+featured: false
+---
+
+## iOS 界面传值
+
+### 一、属性传值（正向传值：A → B）
+
+#### 原理
+
+在 **B 界面声明公开属性**，A 界面在跳转前给该属性赋值。适用于从前一个页面向后一个页面传递数据。
+
+
+```
+A界面（VCFirst）  ──push──▶  B界面（VCSecond）
+      传值方                      接收方
+```
+
+> **注意**：属性 `recievedText` 原文有拼写错误，正确应为 `receivedText`。
+
+------
+
+#### 实现步骤
+
+**第一步：在 VCSecond.h 中声明接收属性**
+
+`.h` 是头文件，相当于这个类对外公开的"接口说明书"。把属性写在这里，其他类 import 之后就能看到并访问它。如果写在 `.m` 的匿名分类里，外部是访问不到的。
+
+属性修饰符选 `copy` 而不是 `strong`，是因为 `NSString` 有可能被传入一个 `NSMutableString`，`copy` 能保证 B 拿到的是一份不可变的独立副本，不会被外部意外修改。
+
+
+objc
+
+```objc
+// VCSecond.h
+#import <UIKit/UIKit.h>
+
+@interface VCSecond : UIViewController
+
+@property (nonatomic, copy) NSString *receivedText; // 接收从A传来的值
+
+@end
+```
+
+**第二步：在 VCSecond.m 中使用该属性**
+
+在 `viewDidLoad` 里使用属性是安全的——此时控制器已经完成初始化，A 在 push 之前已经完成赋值，所以 `self.receivedText` 一定有值。不要在 `init` 方法里读取它，那时候赋值还没发生。
+
+
+objc
+
+```objc
+// VCSecond.m
+#import "VCSecond.h"
+
+@interface VCSecond ()
+@property (nonatomic, strong) UILabel *label;
+@end
+
+@implementation VCSecond
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.view.backgroundColor = [UIColor whiteColor];
+
+    self.label = [[UILabel alloc] initWithFrame:CGRectMake(100, 200, 200, 50)];
+    self.label.textAlignment = NSTextAlignmentCenter;
+    self.label.text = self.receivedText; //  直接使用传入的值
+    [self.view addSubview:self.label];
+}
+
+@end
+```
+
+**第三步：在 VCFirst.m 中赋值并跳转**
+
+赋值和跳转的顺序很关键：**必须先赋值，再 push**。push 之后系统会调用 B 的 `viewDidLoad`，如果赋值在 push 之后，B 读到的就是 nil。
+
+另外记得 import VCSecond.h，否则编译器不知道 `vc.receivedText` 这个属性的存在，会直接报错。
+
+
+objc
+
+```objc
+// VCFirst.m
+#import "VCFirst.h"
+#import "VCSecond.h" // 必须导入，才能访问 VCSecond 的属性
+
+@interface VCFirst ()
+@property (nonatomic, strong) UITextField *textField;
+@end
+
+@implementation VCFirst
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.view.backgroundColor = [UIColor whiteColor];
+
+    self.textField = [[UITextField alloc] initWithFrame:CGRectMake(100, 200, 200, 40)];
+    self.textField.borderStyle = UITextBorderStyleRoundedRect;
+    self.textField.placeholder = @"请输入内容";
+    [self.view addSubview:self.textField];
+
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeSystem];
+    btn.frame = CGRectMake(100, 270, 200, 40);
+    [btn setTitle:@"跳转到第二页" forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(btnClick) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btn];
+}
+
+- (void)btnClick {
+    VCSecond *vc = [[VCSecond alloc] init];
+    vc.receivedText = self.textField.text; // 先赋值
+    [self.navigationController pushViewController:vc animated:YES]; // 后跳转
+}
+
+@end
+```
+
+------
+
+### 二、代理传值（反向传值：B → A）
+
+#### 为什么属性传值做不到反向传？
+
+A push 到 B 之后，A 就进入了"等待"状态，它不会主动做任何事。B 此时并没有持有 A 的引用，所以 B 无法直接找到 A、给 A 的属性赋值。
+
+代理模式的核心思路是：**B 不直接操作 A，而是通过调用一个"约定好的方法"来通知外界，A 自己来实现这个方法、完成赋值**。B 只负责喊一声"我有数据了"，至于谁来处理、怎么处理，B 不关心。
+
+#### 代理模式三要素
+
+| 要素               | 对应角色           | 说明                                     |
+| ------------------ | ------------------ | ---------------------------------------- |
+| 协议（Protocol）   | 接口约定           | 规定传值方法的格式                       |
+| 委托方             | B 界面（VCSecond） | 定义协议，持有代理引用，在需要时调用方法 |
+| 代理人（Delegate） | A 界面（VCFirst）  | 遵守协议，实现方法，真正执行操作         |
+
+#### 数据流向
+
+
+```
+B界面（VCSecond）  ──调用代理方法──▶  A界面（VCFirst）
+    委托方                               代理人（实现方法）
+```
+
+------
+
+#### 实现步骤
+
+**第一步：在 VCSecond.h 中定义协议，并声明 delegate 属性**
+
+协议就是一份"合同"，规定了代理人必须实现哪些方法。把协议定义在 VCSecond.h 里，是因为协议描述的是"B 需要别人帮它做什么"，自然由 B 来声明。
+
+`delegate` 属性用 `id<VCSecondDelegate>` 类型，意思是"任何遵守了这份协议的对象都可以做我的代理"，不限定具体类型，灵活性更高。
+
+
+objc
+
+```objc
+// VCSecond.h
+#import <UIKit/UIKit.h>
+
+// 定义协议
+@protocol VCSecondDelegate <NSObject>
+
+- (void)vcSecond:(id)vcSecond didSendText:(NSString *)text;
+
+@end
+
+@interface VCSecond : UIViewController
+
+// 声明 delegate 属性，必须用 weak！
+@property (nonatomic, weak) id<VCSecondDelegate> delegate;
+
+@end
+```
+
+> 为什么 delegate 必须用 `weak`？**
+>
+> A 持有 B（push 进来的），如果 B 再用 `strong` 持有 A（作为 delegate），两者就互相强引用，谁也释放不了，造成内存泄漏。用 `weak` 让 B 对 A 的引用不增加引用计数，A 就能正常释放。
+
+**第二步：在 VCSecond.m 中触发代理方法**
+
+B 在需要传值的时机（这里是点击返回按钮时）调用 delegate 的方法，把数据"推出去"。
+
+调用前用 `respondsToSelector:` 判断代理是否实现了该方法，这是一种防御性写法。如果 delegate 为 nil，或者代理人没有实现这个方法，直接调用会 crash；加上这个判断就安全多了。
+
+
+objc
+
+```objc
+// VCSecond.m
+#import "VCSecond.h"
+
+@interface VCSecond ()
+@property (nonatomic, strong) UITextField *textField;
+@end
+
+@implementation VCSecond
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.view.backgroundColor = [UIColor orangeColor];
+
+    self.textField = [[UITextField alloc] initWithFrame:CGRectMake(100, 200, 200, 40)];
+    self.textField.borderStyle = UITextBorderStyleRoundedRect;
+    self.textField.placeholder = @"输入要传回的内容";
+    [self.view addSubview:self.textField];
+
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeSystem];
+    btn.frame = CGRectMake(100, 270, 200, 40);
+    [btn setTitle:@"返回并传值" forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(backBtnClick) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btn];
+}
+
+- (void)backBtnClick {
+    // 先传值，再 pop，顺序不能反
+    if ([self.delegate respondsToSelector:@selector(vcSecond:didSendText:)]) {
+        [self.delegate vcSecond:self didSendText:self.textField.text];
+    }
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+@end
+```
+
+**第三步：VCFirst 遵守协议，设置代理，实现方法**
+
+遵守协议写在 `.h` 的尖括号里，相当于公开声明"我实现了这份合同"。如果只在 `.m` 里遵守，外部看不到，有时会引起警告。
+
+设置 `vc.delegate = self` 这一步非常容易遗漏——协议和方法都写好了，但忘了指定代理人，结果 delegate 一直是 nil，方法永远不会被调用。
+
+
+objc
+
+```objc
+// VCFirst.h
+#import <UIKit/UIKit.h>
+#import "VCSecond.h" // 导入头文件才能使用协议
+
+@interface VCFirst : UIViewController <VCSecondDelegate> // 遵守协议
+
+@end
+```
+
+
+objc
+
+```objc
+// VCFirst.m
+#import "VCFirst.h"
+
+@interface VCFirst ()
+@property (nonatomic, strong) UILabel *label;
+@end
+
+@implementation VCFirst
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.view.backgroundColor = [UIColor whiteColor];
+
+    self.label = [[UILabel alloc] initWithFrame:CGRectMake(100, 200, 200, 50)];
+    self.label.text = @"等待传值...";
+    self.label.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:self.label];
+
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeSystem];
+    btn.frame = CGRectMake(100, 270, 200, 40);
+    [btn setTitle:@"去第二页" forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(btnClick) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btn];
+}
+
+- (void)btnClick {
+    VCSecond *vc = [[VCSecond alloc] init];
+    vc.delegate = self; // 指定代理，这步漏掉永远不会被调用
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+// 实现协议方法，B 调用时这里自动触发
+- (void)vcSecond:(id)vcSecond didSendText:(NSString *)text {
+    self.label.text = text;
+}
+
+@end
+```
+
+------
+
+### 三、两种传值方式对比
+
+两种方式本质上都是"让另一个控制器持有数据"，只是持有的时机和方向不同。正向传值在跳转前完成，简单直接；反向传值依赖回调机制，写法多几步，但一旦理解了代理模式，这套写法在 iOS 开发中会反复用到，非常值得掌握。
+
+|            | 属性传值      | 代理传值               |
+| ---------- | ------------- | ---------------------- |
+| 方向       | A → B（正向） | B → A（反向）          |
+| 时机       | 跳转前赋值    | 返回时回调             |
+| 实现复杂度 | 简单          | 相对复杂               |
+| 适用场景   | 传递初始数据  | 传递结果/回调数据      |
+| 内存注意   | 无特殊要求    | delegate 必须用 `weak` |

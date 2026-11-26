@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NotesExplorer from '../components/NotesExplorer.tsx';
+import { SITE_PROFILE } from '../data/profile';
+---
+
+<BaseLayout
+  title={`精选笔记 · ${SITE_PROFILE.brand}`}
+  description="严格精选大一 C 语言与数据结构、Objective-C / UIKit / iOS 项目总结及 Python 学习原创博客"
+  currentPath="/notes"
+>
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-12">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 reveal">
+      <div class="space-y-3">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full liquid-glass text-xs font-mono text-[var(--accent)]">
+          <span>CURATED TECHNICAL NOTES</span>
+          <span class="opacity-40">·</span>
+          <span>C · OBJECTIVE-C · PYTHON</span>
+        </div>
+        <h1 class="font-serif text-3xl sm:text-5xl font-bold text-[var(--text-primary)] leading-tight">
+          精选学习笔记与博客
+        </h1>
+        <p class="text-sm sm:text-base text-[var(--text-secondary)] max-w-2xl leading-relaxed">
+          只收录最有代表性的三条亲手打磨的学习主线：<strong class="text-[var(--text-primary)]">大一 C 语言与数据结构</strong>、<strong class="text-[var(--text-primary)]">Objective-C 与 iOS UI 实战</strong>，以及 <strong class="text-[var(--text-primary)]">Python 编程与可视化</strong>。
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2.5 shrink-0">
+        <a
+          href={SITE_PROFILE.socials.csdn}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="px-4 py-2 rounded-full text-xs font-medium bg-[var(--accent)] text-white hover:brightness-110 transition-all"
+        >
+          CSDN 主页 ↗
+        </a>
+        <a
+          href={SITE_PROFILE.socials.noteRepo}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="px-4 py-2 rounded-full text-xs font-medium liquid-glass text-[var(--text-primary)] hover:border-[var(--accent)] transition-all"
+        >
+          GitHub 笔记库 ↗
+        </a>
+      </div>
+    </div>
+
+    <NotesExplorer client:load baseUrl={import.meta.env.BASE_URL} />
+  </section>
+</BaseLayout>

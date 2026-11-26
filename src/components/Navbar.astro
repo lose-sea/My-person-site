@@ -1,0 +1,330 @@
+---
+import { SITE_PROFILE } from '../data/profile';
+import { withBase } from '../utils/paths';
+
+interface WallpaperOption {
+  id: string;
+  name: string;
+  shortName: string;
+  resolvedSrc: string;
+  tone: string;
+}
+
+interface Props {
+  currentPath: string;
+  wallpapers: WallpaperOption[];
+}
+
+const { currentPath, wallpapers } = Astro.props;
+
+const navItems = [
+  { href: '/', label: '首页' },
+  { href: '/roadmap', label: '学习路线' },
+  { href: '/projects', label: '项目' },
+  { href: '/notes', label: '精选笔记' },
+  { href: '/life', label: '生活志' },
+  { href: '/links', label: '友链图谱' },
+];
+
+function isActive(href: string) {
+  if (href === '/') return currentPath === '/' || currentPath === '';
+  return currentPath.startsWith(href);
+}
+---
+
+<header id="site-navbar" class="fixed top-0 inset-x-0 z-50 transition-all duration-500 px-3 sm:px-6 pt-3 sm:pt-4">
+  <nav
+    id="nav-capsule"
+    class="max-w-6xl mx-auto flex items-center justify-between gap-3 px-4 sm:px-5 h-14 rounded-full transition-all duration-500 liquid-glass"
+  >
+    <!-- Brand signature (tommywutong + zyx322 vibe) -->
+    <a href={withBase('/')} class="flex items-center gap-2.5 group shrink-0">
+      <span class="w-8 h-8 rounded-full overflow-hidden ring-1 ring-white/25 shadow-sm transition-transform duration-300 group-hover:scale-105">
+        <img
+          src={SITE_PROFILE.avatarUrl}
+          alt={SITE_PROFILE.displayName}
+          class="w-full h-full object-cover"
+          loading="eager"
+        />
+      </span>
+      <div class="flex flex-col leading-none">
+        <span class="font-serif font-semibold text-sm sm:text-base tracking-tight text-[var(--text-primary)]">
+          {SITE_PROFILE.brand}
+        </span>
+        <span class="text-[10px] font-mono tracking-wider text-[var(--text-muted)] hidden sm:block">
+          iOS LAB · 25
+        </span>
+      </div>
+    </a>
+
+    <!-- Center Desktop Nav Links -->
+    <ul class="hidden md:flex items-center gap-1">
+      {navItems.map((item) => {
+        const active = isActive(item.href);
+        return (
+          <li>
+            <a
+              href={withBase(item.href)}
+              class:list={[
+                'px-3.5 py-1.5 rounded-full text-[13.5px] font-medium transition-all duration-250',
+                active
+                  ? 'bg-[var(--accent-soft)] text-[var(--accent)] ring-1 ring-[var(--accent)]/35 shadow-sm'
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-pill)]',
+              ]}
+            >
+              {item.label}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+
+    <!-- Right Controls -->
+    <div class="flex items-center gap-1.5 sm:gap-2 relative">
+      <!-- Quick Search trigger -->
+      <button
+        type="button"
+        id="open-search-btn"
+        aria-label="站内搜索"
+        title="搜索学习路线、项目与笔记 (⌘K)"
+        class="inline-flex items-center gap-1.5 h-8 px-2.5 sm:px-3 rounded-full text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-[var(--bg-pill)] hover:bg-white/10 border border-[var(--border-subtle)] transition-colors cursor-pointer"
+      >
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.3-4.3"></path>
+        </svg>
+        <span class="hidden lg:inline font-mono text-[11px] opacity-80">⌘K</span>
+      </button>
+
+      <!-- Atmosphere / Wallpaper Picker Button -->
+      <div class="relative">
+        <button
+          type="button"
+          id="atmosphere-menu-btn"
+          aria-label="切换背景氛围"
+          title="切换星轨实验室 / 二次元液态玻璃壁纸"
+          class="inline-flex items-center gap-1.5 h-8 px-2.5 sm:px-3 rounded-full text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-[var(--bg-pill)] hover:bg-white/10 border border-[var(--border-subtle)] transition-colors cursor-pointer"
+        >
+          <span id="atmosphere-indicator" class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span id="atmosphere-label" class="hidden sm:inline">动漫壁纸</span>
+        </button>
+
+        <!-- Popover Panel -->
+        <div
+          id="atmosphere-popover"
+          class="hidden absolute right-0 mt-3 w-64 p-3 rounded-2xl liquid-glass shadow-2xl border border-[var(--border-strong)] z-50"
+        >
+          <div class="flex items-center justify-between mb-2.5">
+            <span class="text-xs font-semibold text-[var(--text-primary)]">空间氛围切换</span>
+            <span class="text-[10px] font-mono text-[var(--text-muted)]">LAB × ANIME</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-1.5 mb-3">
+            <button
+              type="button"
+              data-set-atmosphere="lab"
+              class="atm-mode-btn px-2.5 py-2 rounded-xl text-xs font-medium border border-[var(--border-subtle)] text-left transition-all cursor-pointer"
+            >
+              <div class="font-semibold">✦ 深空星轨</div>
+              <div class="text-[10px] text-[var(--text-muted)] mt-0.5">极客实验室画布</div>
+            </button>
+            <button
+              type="button"
+              data-set-atmosphere="anime"
+              class="atm-mode-btn px-2.5 py-2 rounded-xl text-xs font-medium border border-[var(--border-subtle)] text-left transition-all cursor-pointer"
+            >
+              <div class="font-semibold">☾ 动漫玻璃</div>
+              <div class="text-[10px] text-[var(--text-muted)] mt-0.5">二次元壁纸轮播</div>
+            </button>
+          </div>
+
+          <div class="text-[11px] text-[var(--text-muted)] mb-1.5 flex items-center justify-between">
+            <span>壁纸选择</span>
+            <button
+              type="button"
+              data-set-wallpaper="auto"
+              class="wp-pick-btn text-[10px] px-1.5 py-0.5 rounded bg-[var(--bg-pill)] hover:text-[var(--accent)] cursor-pointer"
+            >
+              自动轮播
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-1.5">
+            {wallpapers.map((wp) => (
+              <button
+                type="button"
+                data-set-wallpaper={wp.id}
+                class="wp-pick-btn group relative overflow-hidden rounded-lg h-12 border border-[var(--border-subtle)] hover:border-[var(--accent)] transition-all cursor-pointer"
+              >
+                <img
+                  src={wp.resolvedSrc}
+                  alt={wp.shortName}
+                  class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                />
+                <span class="absolute inset-x-0 bottom-0 text-[10px] text-white bg-gradient-to-t from-black/80 to-transparent py-0.5 px-1.5 text-left truncate">
+                  {wp.shortName}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Dark / Light Theme Toggle -->
+      <button
+        type="button"
+        id="theme-toggle-btn"
+        aria-label="切换深浅色主题"
+        title="切换深色 / 浅色模式"
+        class="inline-flex items-center justify-center w-8 h-8 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-[var(--bg-pill)] hover:bg-white/10 border border-[var(--border-subtle)] transition-colors cursor-pointer"
+      >
+        <svg id="icon-moon" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+        </svg>
+        <svg id="icon-sun" class="w-4 h-4 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+        </svg>
+      </button>
+
+      <!-- Mobile Hamburger -->
+      <button
+        type="button"
+        id="mobile-menu-btn"
+        aria-label="展开导航菜单"
+        class="md:hidden inline-flex items-center justify-center w-8 h-8 rounded-full text-[var(--text-primary)] bg-[var(--bg-pill)] border border-[var(--border-subtle)] cursor-pointer"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="4" y1="7" x2="20" y2="7"></line>
+          <line x1="4" y1="12" x2="20" y2="12"></line>
+          <line x1="4" y1="17" x2="20" y2="17"></line>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Dropdown Capsule -->
+  <div
+    id="mobile-menu-panel"
+    class="hidden md:hidden max-w-6xl mx-auto mt-2 p-3 rounded-2xl liquid-glass border border-[var(--border-strong)]"
+  >
+    <ul class="grid grid-cols-2 gap-1.5">
+      {navItems.map((item) => {
+        const active = isActive(item.href);
+        return (
+          <li>
+            <a
+              href={withBase(item.href)}
+              class:list={[
+                'block px-3.5 py-2.5 rounded-xl text-sm font-medium text-center transition-colors',
+                active
+                  ? 'bg-[var(--accent-soft)] text-[var(--accent)] ring-1 ring-[var(--accent)]/35'
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-pill)]',
+              ]}
+            >
+              {item.label}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</header>
+
+<script is:inline>
+  (function () {
+    const html = document.documentElement;
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    const iconMoon = document.getElementById('icon-moon');
+    const iconSun = document.getElementById('icon-sun');
+    const atmBtn = document.getElementById('atmosphere-menu-btn');
+    const atmPopover = document.getElementById('atmosphere-popover');
+    const atmLabel = document.getElementById('atmosphere-label');
+    const atmDot = document.getElementById('atmosphere-indicator');
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const mobilePanel = document.getElementById('mobile-menu-panel');
+    const searchBtn = document.getElementById('open-search-btn');
+
+    function updateThemeUI() {
+      const theme = html.getAttribute('data-theme') || 'dark';
+      if (iconMoon && iconSun) {
+        iconMoon.classList.toggle('hidden', theme === 'light');
+        iconSun.classList.toggle('hidden', theme !== 'light');
+      }
+    }
+
+    function updateAtmUI() {
+      const mode = html.getAttribute('data-atmosphere') || 'anime';
+      if (atmLabel) atmLabel.textContent = mode === 'anime' ? '动漫壁纸' : '星轨';
+      if (atmDot) {
+        atmDot.className =
+          mode === 'anime'
+            ? 'w-2 h-2 rounded-full bg-emerald-400'
+            : 'w-2 h-2 rounded-full bg-violet-400';
+      }
+      document.querySelectorAll('.atm-mode-btn').forEach((btn) => {
+        const isCurrent = btn.getAttribute('data-set-atmosphere') === mode;
+        btn.style.borderColor = isCurrent ? 'var(--accent)' : 'var(--border-subtle)';
+        btn.style.background = isCurrent ? 'var(--accent-soft)' : 'transparent';
+      });
+    }
+
+    themeBtn?.addEventListener('click', () => {
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      try {
+        localStorage.setItem('lose-sea-theme', next);
+      } catch (_) {}
+      updateThemeUI();
+      window.dispatchEvent(new CustomEvent('lose-sea:theme-change'));
+    });
+
+    atmBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      atmPopover?.classList.toggle('hidden');
+    });
+
+    document.querySelectorAll('.atm-mode-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const mode = btn.getAttribute('data-set-atmosphere') || 'anime';
+        html.setAttribute('data-atmosphere', mode);
+        try {
+          localStorage.setItem('lose-sea-atmosphere-v2', mode);
+        } catch (_) {}
+        updateAtmUI();
+        window.dispatchEvent(new CustomEvent('lose-sea:atmosphere-change'));
+      });
+    });
+
+    document.querySelectorAll('.wp-pick-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const wp = btn.getAttribute('data-set-wallpaper') || 'auto';
+        html.setAttribute('data-atmosphere', 'anime');
+        try {
+          localStorage.setItem('lose-sea-atmosphere-v2', 'anime');
+          localStorage.setItem('lose-sea-wallpaper', wp);
+        } catch (_) {}
+        updateAtmUI();
+        window.dispatchEvent(new CustomEvent('lose-sea:atmosphere-change'));
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (atmPopover && !atmPopover.contains(e.target) && !atmBtn?.contains(e.target)) {
+        atmPopover.classList.add('hidden');
+      }
+    });
+
+    mobileBtn?.addEventListener('click', () => {
+      mobilePanel?.classList.toggle('hidden');
+    });
+
+    searchBtn?.addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('lose-sea:open-search'));
+    });
+
+    updateThemeUI();
+    updateAtmUI();
+  })();
+</script>

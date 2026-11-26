@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectGallery from '../components/ProjectGallery.tsx';
+import { SITE_PROFILE } from '../data/profile';
+---
+
+<BaseLayout
+  title={`项目展厅 · ${SITE_PROFILE.brand}`}
+  description="MyMusic 音乐社交播放器、Spotify_MusicPlayer 像素级重制、3G Share、天气预报、网易云 UI、Zara & 计算器及 C/OC/Swift/Python 代码库"
+  currentPath="/projects"
+>
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-12">
+    <div class="space-y-4 mb-10 reveal">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full liquid-glass text-xs font-mono text-[var(--accent)]">
+        <span>PROJECTS SHOWCASE</span>
+        <span class="opacity-40">·</span>
+        <span>OBJECTIVE-C · SWIFT · PYTHON · C</span>
+      </div>
+      <h1 class="font-serif text-3xl sm:text-5xl font-bold text-[var(--text-primary)] leading-tight">
+        我的项目展厅
+      </h1>
+      <p class="text-sm sm:text-base text-[var(--text-secondary)] max-w-2xl leading-relaxed">
+        从最初的 UIKit 小练习、天气预报与 3G Share，到架构完整、能真实联网播放歌词与离线下载的 MyMusic 及 Spotify_MusicPlayer——每一行代码都是亲手踩坑换来的里程碑。
+      </p>
+    </div>
+
+    <ProjectGallery client:load baseUrl={import.meta.env.BASE_URL} />
+  </section>
+</BaseLayout>

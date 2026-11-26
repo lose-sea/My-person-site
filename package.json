@@ -1,0 +1,27 @@
+{
+  "name": "lose-sea-site",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "lose_sea · iOS Lab & Serendipity — 大二 iOS 学生的个人技术实验室、学习路线、项目展厅与生活志",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/react": "^4.4.2",
+    "@tailwindcss/vite": "^4.1.17",
+    "astro": "^5.17.1",
+    "lucide-react": "^0.511.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tailwindcss": "^4.1.17"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.8.3"
+  }
+}

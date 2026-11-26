@@ -1,0 +1,232 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BentoLab from '../components/BentoLab.tsx';
+import ArticleCardDeck from '../components/ArticleCardDeck.tsx';
+import LifeCarousel from '../components/LifeCarousel.tsx';
+import DockToolbox from '../components/DockToolbox.astro';
+import { SITE_PROFILE } from '../data/profile';
+import { ROADMAP_STAGES } from '../data/roadmap';
+import { withBase } from '../utils/paths';
+---
+
+<BaseLayout
+  title={`${SITE_PROFILE.brand} · 大二 iOS 开发者的个人实验室与成长志`}
+  description={SITE_PROFILE.heroIntro}
+  currentPath="/"
+>
+  <!-- HERO SECTION: Blending zyx322.xyz's dreamy Serendipity glass atmosphere & tommywutong.cn's crisp lab intro -->
+  <section class="relative min-h-[92vh] flex items-center justify-center pt-28 pb-16 px-4 sm:px-6 overflow-hidden">
+    <!-- Vertical Editorial Side Poetry (zyx322.xyz signature detail) -->
+    <div
+      class="hidden xl:flex flex-col items-center gap-4 absolute right-8 top-1/2 -translate-y-1/2 text-xs text-[var(--text-muted)] opacity-75 select-none pointer-events-none"
+      aria-hidden="true"
+    >
+      <span class="w-px h-14 bg-gradient-to-b from-transparent via-[var(--accent)] to-transparent"></span>
+      <p class="vertical-poetry leading-loose">{SITE_PROFILE.sidePoetry}</p>
+      <span class="w-px h-14 bg-gradient-to-b from-transparent via-[var(--accent)] to-transparent"></span>
+    </div>
+
+    <div class="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+      <!-- Left / Primary Hero Copy -->
+      <div class="lg:col-span-7 space-y-6">
+        <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full liquid-glass text-xs font-mono text-[var(--text-secondary)]">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>LOSE_SEA&apos;S LAB · {SITE_PROFILE.identity.grade}</span>
+        </div>
+
+        <div class="space-y-2">
+          <p class="font-[var(--font-script)] text-2xl sm:text-3xl hero-script-gradient font-bold tracking-wide">
+            {SITE_PROFILE.heroScriptTitle}
+          </p>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[var(--text-primary)] leading-[1.12]">
+            {SITE_PROFILE.heroHeadline}
+          </h1>
+          <p class="font-serif text-lg sm:text-xl text-[var(--text-secondary)] pt-1">
+            {SITE_PROFILE.heroSubtitle}
+          </p>
+        </div>
+
+        <p class="text-sm sm:text-base text-[var(--text-secondary)] max-w-xl leading-relaxed">
+          {SITE_PROFILE.heroIntro}
+        </p>
+
+        <!-- Primary CTA Row -->
+        <div class="flex flex-wrap items-center gap-3 pt-2">
+          <a
+            href={withBase('/roadmap')}
+            class="px-5 py-2.5 rounded-full text-sm font-medium bg-[var(--accent)] text-white hover:brightness-110 transition-all shadow-lg shadow-violet-500/25 inline-flex items-center gap-1.5"
+          >
+            探索我的学习路线 →
+          </a>
+          <a
+            href={withBase('/projects')}
+            class="px-5 py-2.5 rounded-full text-sm font-medium liquid-glass text-[var(--text-primary)] hover:border-[var(--accent)] transition-all"
+          >
+            查看 iOS 项目展厅
+          </a>
+          <button
+            type="button"
+            id="hero-anime-toggle"
+            class="px-4 py-2.5 rounded-full text-xs font-mono bg-[var(--bg-pill)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-all cursor-pointer"
+          >
+            ✦ 切换星轨 / 动漫壁纸
+          </button>
+        </div>
+
+        <!-- Mini Roadmap Strip -->
+        <div class="pt-4 flex flex-wrap items-center gap-2 text-xs font-mono text-[var(--text-muted)]">
+          {ROADMAP_STAGES.slice(0, 4).map((stage, idx) => (
+            <a
+              href={withBase(`/roadmap#${stage.id}`)}
+              class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--bg-pill)] border border-[var(--border-subtle)] hover:border-[var(--accent)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              <span
+                class="w-1.5 h-1.5 rounded-full"
+                style={`background-color: ${stage.accentColor};`}
+              />
+              <span>{stage.semester}</span>
+              {idx < 3 && <span class="opacity-40 ml-1">/</span>}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Right Floating Showcase Glass Card -->
+      <div class="lg:col-span-5 flex justify-center lg:justify-end">
+        <div class="relative w-full max-w-md bento-card p-6 sm:p-7 specular-edge animate-float-slow">
+          <div class="flex items-center gap-4 pb-5 border-b border-[var(--border-subtle)]">
+            <div class="relative shrink-0">
+              <div class="w-16 h-16 rounded-2xl overflow-hidden ring-2 ring-[var(--accent)]/50 shadow-xl">
+                <img
+                  src={SITE_PROFILE.avatarUrl}
+                  alt={SITE_PROFILE.displayName}
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-400 ring-4 ring-[var(--bg-canvas)] flex items-center justify-center text-[10px] text-black font-bold">
+                ✓
+              </span>
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <h2 class="font-serif text-lg font-bold text-[var(--text-primary)] truncate">
+                  {SITE_PROFILE.displayName}
+                </h2>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[var(--accent-soft)] text-[var(--accent)]">
+                  iOS Dev
+                </span>
+              </div>
+              <p class="text-xs text-[var(--text-secondary)] mt-1">
+                {SITE_PROFILE.identity.lab}
+              </p>
+              <p class="text-[11px] font-mono text-[var(--text-muted)] mt-0.5">
+                {SITE_PROFILE.location.cityCn} · {SITE_PROFILE.identity.motto}
+              </p>
+            </div>
+          </div>
+
+          <!-- Latest Active Focus -->
+          <div class="py-5 space-y-3">
+            <div class="text-[11px] font-mono uppercase tracking-widest text-[var(--text-muted)]">
+              CURRENT FOCUS · 2026.11
+            </div>
+            <div class="space-y-2">
+              <a
+                href={withBase('/projects#mymusic')}
+                class="flex items-center justify-between p-3 rounded-xl bg-[var(--bg-pill)] border border-[var(--border-subtle)] hover:border-[var(--accent)] transition-all group"
+              >
+                <div class="flex items-center gap-3 min-w-0">
+                  <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-white text-sm font-bold shrink-0">
+                    ♫
+                  </span>
+                  <div class="min-w-0">
+                    <div class="text-xs font-semibold text-[var(--text-primary)] group-hover:text-[var(--accent)] truncate">
+                      MyMusic &amp; Spotify_MusicPlayer
+                    </div>
+                    <div class="text-[11px] text-[var(--text-muted)] truncate">
+                      Objective-C · AVPlayer · WCDB · MVC+Service
+                    </div>
+                  </div>
+                </div>
+                <span class="text-xs text-[var(--text-muted)] group-hover:text-[var(--accent)]">↗</span>
+              </a>
+
+              <a
+                href={withBase('/roadmap#stage-architecture-swift')}
+                class="flex items-center justify-between p-3 rounded-xl bg-[var(--bg-pill)] border border-[var(--border-subtle)] hover:border-[var(--accent)] transition-all group"
+              >
+                <div class="flex items-center gap-3 min-w-0">
+                  <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-400 to-rose-500 flex items-center justify-center text-white text-xs font-mono font-bold shrink-0">
+                    Sw
+                  </span>
+                  <div class="min-w-0">
+                    <div class="text-xs font-semibold text-[var(--text-primary)] group-hover:text-[var(--accent)] truncate">
+                      Swift 现代语法与结构体/类进阶
+                    </div>
+                    <div class="text-[11px] text-[var(--text-muted)] truncate">
+                      闭包 · 枚举 · 结构体与类 · 迈向 SwiftUI
+                    </div>
+                  </div>
+                </div>
+                <span class="text-xs text-[var(--text-muted)] group-hover:text-[var(--accent)]">↗</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Poetic Bio Footer -->
+          <div class="pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs text-[var(--text-muted)]">
+            <span class="font-serif italic truncate">“{SITE_PROFILE.tagline}”</span>
+            <a href={withBase('/links')} class="shrink-0 ml-2 font-mono text-[var(--accent)] hover:underline">
+              星月图谱 ✦
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll Down Cue -->
+    <a
+      href="#home-lab"
+      aria-label="下滑探索个人实验室"
+      class="absolute bottom-5 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-[11px] font-mono text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors"
+    >
+      <span>下滑探索实验室</span>
+      <span class="w-5 h-8 rounded-full border border-[var(--border-strong)] flex justify-center pt-1.5">
+        <span class="w-1 h-2 rounded-full bg-[var(--accent)] animate-scroll-dot"></span>
+      </span>
+    </a>
+  </section>
+
+  <!-- 01. BENTO PERSONAL LAB (tommywutong.cn inspiration) -->
+  <BentoLab client:load baseUrl={import.meta.env.BASE_URL} />
+
+  <!-- 02. FEATURED ARTICLES 3D STACKED DECK (zyx322.xyz inspiration) -->
+  <ArticleCardDeck client:load baseUrl={import.meta.env.BASE_URL} />
+
+  <!-- 03. LIFE PHOTO CURVED CAROUSEL (zyx322.xyz inspiration) -->
+  <LifeCarousel client:load baseUrl={import.meta.env.BASE_URL} />
+
+  <!-- 04. MACOS DOCK QUICK TOOLBOX -->
+  <DockToolbox />
+
+  <script is:inline>
+    document.getElementById('hero-anime-toggle')?.addEventListener('click', () => {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-atmosphere') === 'anime' ? 'lab' : 'anime';
+      html.setAttribute('data-atmosphere', next);
+      try {
+        localStorage.setItem('lose-sea-atmosphere-v2', next);
+      } catch (_) {}
+      window.dispatchEvent(new CustomEvent('lose-sea:atmosphere-change'));
+      const label = document.getElementById('atmosphere-label');
+      const dot = document.getElementById('atmosphere-indicator');
+      if (label) label.textContent = next === 'anime' ? '动漫壁纸' : '星轨';
+      if (dot) {
+        dot.className =
+          next === 'anime'
+            ? 'w-2 h-2 rounded-full bg-emerald-400'
+            : 'w-2 h-2 rounded-full bg-violet-400';
+      }
+    });
+  </script>
+</BaseLayout>
