@@ -17,6 +17,81 @@ export interface LifeEssay {
   highlight?: string;
 }
 
+export interface LifePhoto {
+  id: string;
+  title: string;
+  caption: string;
+  date: string;
+  location: string;
+  tag: string;
+  src: string;
+  size: 'large' | 'tall' | 'medium' | 'compact' | 'wide';
+}
+
+// 错落生活照片墙数据（登录 QQ 空间读取后会替换为你的真实空间照片与说说）
+export const LIFE_PHOTOS: LifePhoto[] = [
+  {
+    id: 'wall-1',
+    title: '逢魔之时的星夜微光',
+    caption: '写完一周实验代码后的黄昏，总喜欢抬头看看暮色里的云层和星空。',
+    date: '2026.11',
+    location: '西安 · 长安',
+    tag: '光影瞬间',
+    src: '/backgrounds/your-name-comet.jpg',
+    size: 'large',
+  },
+  {
+    id: 'wall-2',
+    title: '凌晨两点的播放器调试',
+    caption: 'MyMusic 第一首在线歌曲与滚动歌词完美对齐的瞬间，截张图留作纪念。',
+    date: '2026.11',
+    location: '3G 实验室',
+    tag: '深夜代码',
+    src: '/projects/mymusic/player.jpg',
+    size: 'tall',
+  },
+  {
+    id: 'wall-3',
+    title: '雨后放晴的云海',
+    caption: '不管遇到多棘手的 Bug，撑过去以后天总会放晴。',
+    date: '2026.10',
+    location: '校园日常',
+    tag: '光影瞬间',
+    src: '/backgrounds/weathering-sky.jpg',
+    size: 'compact',
+  },
+  {
+    id: 'wall-4',
+    title: '蓝调时刻的安静海岸',
+    caption: '有点慢热，有点安静，喜欢戴着耳机把喜欢的画面悄悄收进相册。',
+    date: '2026.09',
+    location: '日常收藏',
+    tag: '心情切片',
+    src: '/backgrounds/suzume-coast.jpg',
+    size: 'wide',
+  },
+  {
+    id: 'wall-5',
+    title: '一起听歌房间的界面定格',
+    caption: '从零写出音乐社交模块，看到页面一点点成形真的很有成就感。',
+    date: '2026.11',
+    location: '3G 实验室',
+    tag: '深夜代码',
+    src: '/projects/mymusic/listen-room.jpg',
+    size: 'tall',
+  },
+  {
+    id: 'wall-6',
+    title: '暮色铁道与慢节奏',
+    caption: '慢慢走也没关系，每一步都在离更好的自己更近一点。',
+    date: '2026.06',
+    location: '校园日常',
+    tag: '心情切片',
+    src: '/backgrounds/sakura-railway.jpg',
+    size: 'large',
+  },
+];
+
 export const ANIME_WALLPAPERS = [
   {
     id: 'your-name-comet',

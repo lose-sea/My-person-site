@@ -81,15 +81,6 @@ export const FRIEND_LINKS: FriendLink[] = [
     badge: 'CS',
     tag: '技术博客',
   },
-  {
-    id: 'my-qzone',
-    name: 'QQ 空间 · 日常碎片',
-    desc: '记录校园日常、心情随笔与生活瞬间的私人小角落',
-    url: 'https://user.qzone.qq.com/2031938936/infocenter',
-    category: 'my-spaces',
-    badge: 'QZ',
-    tag: '生活记录',
-  },
 
   // iOS & Apple 生态
   {

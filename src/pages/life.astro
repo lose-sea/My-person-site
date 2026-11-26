@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import LifeCarousel from '../components/LifeCarousel.tsx';
+import LifePhotoWall from '../components/LifePhotoWall.tsx';
 import { ANIME_WALLPAPERS, LIFE_ESSAYS } from '../data/life';
 import { SITE_PROFILE } from '../data/profile';
 import { withBase } from '../utils/paths';
@@ -8,42 +8,65 @@ import { withBase } from '../utils/paths';
 
 <BaseLayout
   title={`生活志 · ${SITE_PROFILE.brand}`}
-  description="日常随笔、动漫壁纸收藏、实验室深夜瞬间与个人 QQ 空间传送门"
+  description="不规则错落生活照片墙、日常随笔与动漫光影壁纸收藏"
   currentPath="/life"
 >
-  <section class="max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-6">
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-10">
     <!-- Hero -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 reveal">
-      <div class="space-y-3">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full liquid-glass text-xs font-mono text-[var(--accent)]">
-          <span>LIFE &amp; MOMENTS</span>
-          <span class="opacity-40">·</span>
-          <span>慢热 · 安静 · 热爱生活</span>
-        </div>
-        <h1 class="font-serif text-3xl sm:text-5xl font-bold text-[var(--text-primary)] leading-tight">
-          代码之外的生活志
-        </h1>
-        <p class="text-sm sm:text-base text-[var(--text-secondary)] max-w-2xl leading-relaxed">
-          “{SITE_PROFILE.tagline}”——这里记录实验室的深夜微光、喜欢的番剧壁纸、偶尔冒出的小念头，也是随时可以安放照片与碎碎念的角落。
-        </p>
+    <div class="space-y-3 mb-12 reveal">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full liquid-glass text-xs font-mono text-[var(--accent)]">
+        <span>LIFE &amp; MOMENTS</span>
+        <span class="opacity-40">·</span>
+        <span>慢热 · 安静 · 热爱生活</span>
       </div>
+      <h1 class="font-serif text-3xl sm:text-5xl font-bold text-[var(--text-primary)] leading-tight drop-shadow">
+        代码之外的生活志
+      </h1>
+      <p class="text-sm sm:text-base text-[var(--text-secondary)] max-w-2xl leading-relaxed">
+        “{SITE_PROFILE.tagline}”——不再把日常散落在外部空间，而是直接安放在自己的个人网站里，留住照片、心情与成长瞬间。
+      </p>
+    </div>
 
-      <a
-        href={SITE_PROFILE.socials.qzone}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-medium liquid-glass border border-amber-400/35 text-[var(--text-primary)] hover:border-amber-400 transition-all self-start md:self-auto"
-      >
-        <span class="text-amber-400">★</span>
-        前往我的 QQ 空间看更多日常 ↗
-      </a>
+    <!-- Irregular Multi-Size Staggered Life Photo Wall -->
+    <LifePhotoWall client:load baseUrl={import.meta.env.BASE_URL} />
+  </section>
+
+  <!-- Essays Timeline -->
+  <section id="essays" class="max-w-6xl mx-auto px-4 sm:px-6 py-12 scroll-mt-24">
+    <div class="mb-8 reveal">
+      <span class="text-xs font-mono uppercase tracking-[0.22em] text-[var(--accent)]">
+        ESSAYS &amp; FRAGMENTS
+      </span>
+      <h2 class="font-serif text-2xl sm:text-3xl font-bold text-[var(--text-primary)] mt-1">
+        随笔与心情碎片
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {LIFE_ESSAYS.map((essay) => (
+        <article class="bento-card p-6 space-y-4 specular-edge reveal">
+          <div class="flex items-center justify-between text-xs font-mono text-[var(--text-muted)]">
+            <span class="px-2.5 py-0.5 rounded-full bg-[var(--accent-soft)] text-[var(--accent)]">
+              # {essay.tag}
+            </span>
+            <span>{essay.date} · {essay.location}</span>
+          </div>
+
+          {essay.highlight && (
+            <p class="font-serif text-lg font-semibold text-[var(--text-primary)] leading-snug">
+              “{essay.highlight}”
+            </p>
+          )}
+
+          <p class="text-sm text-[var(--text-secondary)] leading-relaxed">
+            {essay.content}
+          </p>
+        </article>
+      ))}
     </div>
   </section>
 
-  <!-- Curved 3D Life Photo Carousel -->
-  <LifeCarousel client:load baseUrl={import.meta.env.BASE_URL} />
-
-  <!-- Anime Wallpaper Atmosphere Wall (preserving existing repo's beloved anime wallpapers) -->
+  <!-- Anime Wallpaper Atmosphere Switcher -->
   <section class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
     <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6 reveal">
       <div>
@@ -51,7 +74,7 @@ import { withBase } from '../utils/paths';
           ANIME ATMOSPHERE GALLERY
         </span>
         <h2 class="font-serif text-2xl font-bold text-[var(--text-primary)] mt-1">
-          珍藏动漫壁纸 · 点击一键设为全站液态玻璃背景
+          全站二次元光影壁纸 · 点击一键切换背景
         </h2>
       </div>
       <button
@@ -59,7 +82,7 @@ import { withBase } from '../utils/paths';
         id="reset-lab-sky-btn"
         class="px-3.5 py-1.5 rounded-full text-xs font-mono bg-[var(--bg-pill)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-all self-start sm:self-auto cursor-pointer"
       >
-        恢复深空星轨画布
+        切换深空星轨画布
       </button>
     </div>
 
@@ -90,62 +113,6 @@ import { withBase } from '../utils/paths';
           </div>
         </button>
       ))}
-    </div>
-  </section>
-
-  <!-- Essays Timeline -->
-  <section id="essays" class="max-w-6xl mx-auto px-4 sm:px-6 py-10 scroll-mt-24">
-    <div class="mb-8 reveal">
-      <span class="text-xs font-mono uppercase tracking-[0.22em] text-[var(--accent)]">
-        ESSAYS &amp; FRAGMENTS
-      </span>
-      <h2 class="font-serif text-2xl font-bold text-[var(--text-primary)] mt-1">
-        随笔与心情碎片
-      </h2>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-      {LIFE_ESSAYS.map((essay) => (
-        <article class="bento-card p-6 space-y-4 specular-edge reveal">
-          <div class="flex items-center justify-between text-xs font-mono text-[var(--text-muted)]">
-            <span class="px-2.5 py-0.5 rounded-full bg-[var(--accent-soft)] text-[var(--accent)]">
-              # {essay.tag}
-            </span>
-            <span>{essay.date} · {essay.location}</span>
-          </div>
-
-          {essay.highlight && (
-            <p class="font-serif text-lg font-semibold text-[var(--text-primary)] leading-snug">
-              “{essay.highlight}”
-            </p>
-          )}
-
-          <p class="text-sm text-[var(--text-secondary)] leading-relaxed">
-            {essay.content}
-          </p>
-        </article>
-      ))}
-    </div>
-
-    <!-- Self-Curation Helper Card (explaining QZone & local editing cleanly) -->
-    <div class="mt-8 bento-card p-6 sm:p-7 flex flex-col md:flex-row items-start md:items-center justify-between gap-5 reveal">
-      <div class="space-y-1.5">
-        <div class="text-xs font-mono text-amber-400">✦ 专属生活记录维护说明</div>
-        <h3 class="font-serif text-lg font-bold text-[var(--text-primary)]">
-          随时同步你的 QQ 空间说说与校园照片
-        </h3>
-        <p class="text-xs sm:text-sm text-[var(--text-secondary)] max-w-2xl leading-relaxed">
-          QQ 空间有登录隐私保护，你可以把想公开珍藏的校园照片放入 <code class="px-1.5 py-0.5 rounded bg-[var(--bg-pill)] font-mono text-xs">public/images/</code>，并在 <code class="px-1.5 py-0.5 rounded bg-[var(--bg-pill)] font-mono text-xs">src/data/life.ts</code> 中直接追加新的相册切片或随笔条目。
-        </p>
-      </div>
-      <a
-        href={SITE_PROFILE.socials.qzone}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="shrink-0 px-5 py-2.5 rounded-full text-xs font-medium bg-[var(--accent)] text-white hover:brightness-110 transition-all"
-      >
-        打开 QQ 空间 ↗
-      </a>
     </div>
   </section>
 

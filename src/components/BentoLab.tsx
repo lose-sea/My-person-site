@@ -417,12 +417,10 @@ export default function BentoLab({ baseUrl = '/' }: BentoLabProps) {
 
             <div className="flex items-center justify-between text-xs pt-2 border-t border-[var(--border-subtle)]">
               <a
-                href={SITE_PROFILE.socials.qzone}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={resolveUrl('/life#photo-wall')}
                 className="text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors"
               >
-                QQ 空间 ↗
+                生活照片墙 →
               </a>
               <a
                 href={resolveUrl('/life#essays')}
