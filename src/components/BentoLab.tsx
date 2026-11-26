@@ -417,7 +417,7 @@ export default function BentoLab({ baseUrl = '/' }: BentoLabProps) {
 
             <div className="flex items-center justify-between text-xs pt-2 border-t border-[var(--border-subtle)]">
               <a
-                href={resolveUrl('/life#photo-wall')}
+                href={resolveUrl('/life/photos')}
                 className="text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors"
               >
                 生活照片墙 →

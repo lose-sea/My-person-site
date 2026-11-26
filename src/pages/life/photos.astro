@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LifePhotoWall from '../../components/LifePhotoWall.tsx';
+import { SITE_PROFILE } from '../../data/profile';
+import { withBase } from '../../utils/paths';
+---
+
+<BaseLayout
+  title={`完整生活照片墙 · ${SITE_PROFILE.brand}`}
+  description="不规则错落排布的完整生活照片墙，收录 3G 实验室、金工实习、三下乡与校园光影瞬间"
+  currentPath="/life"
+>
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-16">
+    <!-- Top Back & Breadcrumb Bar -->
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-8 reveal">
+      <a
+        href={withBase('/life')}
+        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-medium liquid-glass text-[var(--text-primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all"
+      >
+        ← 返回生活志
+      </a>
+
+      <div class="flex items-center gap-2 text-xs font-mono text-[var(--text-muted)]">
+        <a href={withBase('/')} class="hover:text-[var(--accent)] transition-colors">首页</a>
+        <span>/</span>
+        <a href={withBase('/life')} class="hover:text-[var(--accent)] transition-colors">生活志</a>
+        <span>/</span>
+        <span class="text-[var(--accent)]">完整照片墙</span>
+      </div>
+    </div>
+
+    <!-- Full Irregular Multi-Size Photo Wall (All 15 Photos) -->
+    <LifePhotoWall client:load baseUrl={import.meta.env.BASE_URL} />
+  </section>
+</BaseLayout>

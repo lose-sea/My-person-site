@@ -1,34 +1,122 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import LifePhotoWall from '../components/LifePhotoWall.tsx';
-import { ANIME_WALLPAPERS, LIFE_ESSAYS } from '../data/life';
+import { ANIME_WALLPAPERS, LIFE_ESSAYS, LIFE_PHOTOS } from '../data/life';
 import { SITE_PROFILE } from '../data/profile';
 import { withBase } from '../utils/paths';
+
+// 精选 5 张漂亮的小尺寸照片在生活志页错落预览，点击按钮进入完整照片墙
+const previewIds = [
+  'life-3g-blackboard',
+  'life-lab-cat',
+  'life-swift-desk',
+  'life-zhaojin',
+  'life-rooftop-sunset',
+];
+const previewPhotos = previewIds
+  .map((id) => LIFE_PHOTOS.find((p) => p.id === id))
+  .filter((p): p is NonNullable<typeof p> => Boolean(p));
+
+const previewStyles = [
+  'md:-rotate-[2deg] md:mt-2',
+  'md:rotate-[1.8deg] md:mt-6',
+  'md:-rotate-[1.2deg] md:mt-0',
+  'md:rotate-[2deg] md:mt-5',
+  'md:-rotate-[1.6deg] md:mt-1',
+];
 ---
 
 <BaseLayout
   title={`生活志 · ${SITE_PROFILE.brand}`}
-  description="不规则错落生活照片墙、日常随笔与动漫光影壁纸收藏"
+  description="精选生活影像预览、完整错落照片墙入口、日常随笔与动漫光影壁纸"
   currentPath="/life"
 >
   <section class="max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-10">
     <!-- Hero -->
-    <div class="space-y-3 mb-12 reveal">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full liquid-glass text-xs font-mono text-[var(--accent)]">
-        <span>LIFE &amp; MOMENTS</span>
-        <span class="opacity-40">·</span>
-        <span>慢热 · 安静 · 热爱生活</span>
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-12 reveal">
+      <div class="space-y-3">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full liquid-glass text-xs font-mono text-[var(--accent)]">
+          <span>LIFE &amp; MOMENTS</span>
+          <span class="opacity-40">·</span>
+          <span>慢热 · 安静 · 热爱生活</span>
+        </div>
+        <h1 class="font-serif text-3xl sm:text-5xl font-bold text-[var(--text-primary)] leading-tight drop-shadow">
+          代码之外的生活志
+        </h1>
+        <p class="text-sm sm:text-base text-[var(--text-secondary)] max-w-2xl leading-relaxed">
+          “{SITE_PROFILE.tagline}”——把实验室的深夜、校园的晚风与日常随笔都安放在自己的个人网站里。
+        </p>
       </div>
-      <h1 class="font-serif text-3xl sm:text-5xl font-bold text-[var(--text-primary)] leading-tight drop-shadow">
-        代码之外的生活志
-      </h1>
-      <p class="text-sm sm:text-base text-[var(--text-secondary)] max-w-2xl leading-relaxed">
-        “{SITE_PROFILE.tagline}”——不再把日常散落在外部空间，而是直接安放在自己的个人网站里，留住照片、心情与成长瞬间。
-      </p>
+
+      <a
+        href={withBase('/life/photos')}
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-medium bg-[var(--accent)] text-white hover:brightness-110 transition-all shadow-lg shadow-violet-500/25 self-start md:self-auto shrink-0"
+      >
+        <span>📷</span>
+        <span>浏览完整照片墙（{LIFE_PHOTOS.length} 张）</span>
+        <span>→</span>
+      </a>
     </div>
 
-    <!-- Irregular Multi-Size Staggered Life Photo Wall -->
-    <LifePhotoWall client:load baseUrl={import.meta.env.BASE_URL} />
+    <!-- Compact Curated Photo Preview Strip (Small, Tasteful, Slightly Staggered) -->
+    <div class="space-y-5 reveal">
+      <div class="flex items-center justify-between gap-3">
+        <div>
+          <span class="text-xs font-mono uppercase tracking-[0.22em] text-[var(--accent)]">
+            SELECTED SNAPSHOTS
+          </span>
+          <h2 class="font-serif text-xl sm:text-2xl font-bold text-[var(--text-primary)] mt-1">
+            精选生活瞬间
+          </h2>
+        </div>
+        <a
+          href={withBase('/life/photos')}
+          class="text-xs font-mono text-[var(--accent)] hover:underline inline-flex items-center gap-1"
+        >
+          展开全部 {LIFE_PHOTOS.length} 张 →
+        </a>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5 items-start py-2">
+        {previewPhotos.map((photo, idx) => (
+          <a
+            href={withBase('/life/photos')}
+            class={`group block transition-all duration-400 hover:rotate-0 hover:-translate-y-2 hover:z-20 ${previewStyles[idx % previewStyles.length]}`}
+          >
+            <div class="liquid-glass rounded-2xl p-2 border border-white/20 group-hover:border-[var(--accent)]/75 shadow-lg transition-all">
+              <div class="relative aspect-[4/3] rounded-xl overflow-hidden bg-black/30">
+                <img
+                  src={withBase(photo.src)}
+                  alt={photo.title}
+                  loading="lazy"
+                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                <span class="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[9.5px] font-mono text-white/90 bg-black/45 backdrop-blur-md">
+                  {photo.tag}
+                </span>
+                <span class="absolute bottom-2 inset-x-2.5 text-xs font-serif font-semibold text-white truncate drop-shadow">
+                  {photo.title}
+                </span>
+              </div>
+              <div class="px-1 pt-1.5 flex items-center justify-between text-[10px] font-mono text-[var(--text-muted)]">
+                <span class="truncate">{photo.location}</span>
+                <span>{photo.date.slice(5)}</span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <div class="flex justify-center pt-2">
+        <a
+          href={withBase('/life/photos')}
+          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs sm:text-sm font-medium liquid-glass border border-[var(--accent)]/40 text-[var(--text-primary)] hover:bg-[var(--accent)] hover:text-white hover:border-[var(--accent)] transition-all shadow-md"
+        >
+          <span>进入完整不规则照片墙 · 查看全部 {LIFE_PHOTOS.length} 张生活照</span>
+          <span>→</span>
+        </a>
+      </div>
+    </div>
   </section>
 
   <!-- Essays Timeline -->
