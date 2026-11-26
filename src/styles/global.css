@@ -602,6 +602,100 @@ body {
   animation: articleCardSheen 680ms ease-out forwards;
 }
 
+/* =========================================================
+   Floating Portal Orbs & Kinetic Glass Ribbon Animations
+   ========================================================= */
+.portal-orb-bubble {
+  background: radial-gradient(
+    circle at 30% 25%,
+    rgba(255, 255, 255, 0.24) 0%,
+    rgba(22, 32, 58, 0.44) 55%,
+    rgba(12, 18, 34, 0.56) 100%
+  );
+  will-change: transform;
+}
+
+[data-theme="light"] .portal-orb-bubble {
+  background: radial-gradient(
+    circle at 30% 25%,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(241, 245, 255, 0.62) 60%,
+    rgba(224, 231, 255, 0.52) 100%
+  );
+}
+
+[data-theme="light"] .portal-orb-bubble span {
+  color: #1e293b;
+}
+
+@keyframes portalBreezeWave {
+  0% {
+    opacity: 0.55;
+    transform: scale(0.45);
+    box-shadow: inset 0 0 60px rgba(139, 123, 255, 0.35), 0 0 80px rgba(56, 189, 248, 0.25);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.25);
+    box-shadow: inset 0 0 10px rgba(139, 123, 255, 0), 0 0 0 rgba(56, 189, 248, 0);
+  }
+}
+
+.portal-breeze-wave {
+  animation: portalBreezeWave 760ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes portalPillPop {
+  0% {
+    opacity: 0.65;
+    transform: translateY(8px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.portal-pill-pop {
+  animation: portalPillPop 280ms cubic-bezier(0.22, 1.25, 0.36, 1) forwards;
+}
+
+@keyframes portalMarqueeLeft {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-33.3333%, 0, 0); }
+}
+
+@keyframes portalMarqueeRight {
+  0% { transform: translate3d(-33.3333%, 0, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+.portal-marquee-wrap {
+  width: 100%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%);
+}
+
+.portal-marquee-track {
+  display: flex;
+  gap: 18px;
+  width: max-content;
+  padding: 10px 0;
+}
+
+.portal-marquee-left {
+  animation: portalMarqueeLeft 38s linear infinite;
+}
+
+.portal-marquee-right {
+  animation: portalMarqueeRight 42s linear infinite;
+}
+
+.portal-marquee-wrap:hover .portal-marquee-track {
+  animation-play-state: paused;
+}
+
 /* Utility helpers */
 .line-clamp-2 {
   display: -webkit-box;

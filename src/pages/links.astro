@@ -1,43 +1,66 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ConstellationLinks from '../components/ConstellationLinks.tsx';
+import FloatingPortalField from '../components/FloatingPortalField.tsx';
 import { SITE_PROFILE } from '../data/profile';
 ---
 
 <BaseLayout
-  title={`星月友链图谱 · ${SITE_PROFILE.brand}`}
-  description="致敬 zyx322.xyz 的交互式星月友链图谱与深空星座群，收录实验室学长博客、iOS 生态与常用开发工具"
+  title={`浮光传送门 · ${SITE_PROFILE.brand}`}
+  description="在新海诚动漫光影背景中自由漫游的液态玻璃浮光传送门：我的个人阵地、iOS 生态文档、刷题社区与效率工具"
   currentPath="/links"
 >
-  <section class="max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-12">
-    <div class="space-y-3 mb-10 reveal">
+  <section class="pt-28 pb-16">
+    <!-- Open-Air Borderless Header -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 space-y-3 mb-8 reveal">
       <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full liquid-glass text-xs font-mono text-[var(--accent)]">
-        <span>CONSTELLATION LINKS</span>
+        <span>FLOATING PORTAL FIELD</span>
         <span class="opacity-40">·</span>
-        <span>星月图谱 × 深空星座</span>
+        <span>浮光气泡 × 棱镜流廊</span>
       </div>
-      <h1 class="font-serif text-3xl sm:text-5xl font-bold text-[var(--text-primary)] leading-tight">
-        星月友链与常用传送门
+      <h1 class="font-serif text-3xl sm:text-5xl font-bold text-[var(--text-primary)] leading-tight drop-shadow">
+        浮光传送门与常用站点
       </h1>
       <p class="text-sm sm:text-base text-[var(--text-secondary)] max-w-2xl leading-relaxed">
-        每一颗亮起的星，都是陪伴我学习 iOS、写代码、找灵感的同路人与文档灯塔。支持在「☽ 星月图谱」与「✦ 星座星群」两种深空视图间自由切换。
+        告别呆板方框，让日常高频访问的个人阵地、iOS 官方生态、刷题社区与工具文档化作轻盈的液态玻璃光球，在轮换的二次元晴空与星夜里自由漂浮。移动鼠标感受磁吸排斥，或点击「拂风吹散」轻吹一阵风。
       </p>
     </div>
 
-    <ConstellationLinks client:load />
+    <!-- Borderless Animated Portal Field -->
+    <FloatingPortalField client:load />
 
-    <!-- Exchange Friend Links Block (zyx322.xyz signature bottom card) -->
-    <div class="mt-14 bento-card p-6 sm:p-8 specular-edge reveal">
-      <h2 class="font-serif text-xl font-bold text-[var(--text-primary)] mb-4">交换友链</h2>
-      <blockquote class="pl-4 py-2 border-l-4 border-[var(--accent)] text-sm text-[var(--text-secondary)] space-y-2 leading-relaxed">
-        <p>欢迎热爱编程、iOS / 客户端开发、独立设计与记录生活的同学与博主互换友链！</p>
-        <p class="font-mono text-xs text-[var(--text-muted)]">
-          本站名称：{SITE_PROFILE.brand} · 站点描述：大二 iOS 学生的个人技术实验室、学习路线与生活志 · GitHub：github.com/lose-sea
-        </p>
-        <p class="text-xs text-[var(--text-muted)]">
-          需要新增友链时，只需编辑仓库中的 <code class="px-1.5 py-0.5 rounded bg-[var(--bg-pill)]">src/data/links.ts</code> 即可自动点亮一颗新的星辰。
-        </p>
-      </blockquote>
+    <!-- Minimal Floating Exchange Links Strip -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 mt-14 reveal">
+      <div class="liquid-glass rounded-3xl p-6 sm:p-8 border border-white/20">
+        <h2 class="font-serif text-xl font-bold text-[var(--text-primary)] mb-3">交换友链</h2>
+        <blockquote class="pl-4 py-1.5 border-l-4 border-[var(--accent)] text-sm text-[var(--text-secondary)] space-y-2 leading-relaxed">
+          <p>欢迎热爱编程、iOS 开发、独立设计与记录生活的同学和朋友互换友链！</p>
+          <p class="font-mono text-xs text-[var(--text-muted)]">
+            站点名称：{SITE_PROFILE.brand} · 站点简介：大二 iOS 学生的个人技术实验室、学习路线与生活志 · GitHub：github.com/lose-sea
+          </p>
+          <p class="text-xs text-[var(--text-muted)]">
+            需要添加新的朋友站点时，只需编辑 <code class="px-1.5 py-0.5 rounded bg-[var(--bg-pill)]">src/data/links.ts</code> 即可自动生成一颗新的浮光气泡。
+          </p>
+        </blockquote>
+      </div>
     </div>
   </section>
+
+  <!-- Ensure anime wallpaper rotation stays active on the open portal page -->
+  <script is:inline>
+    (function () {
+      const html = document.documentElement;
+      if (html.getAttribute('data-atmosphere') !== 'anime') {
+        html.setAttribute('data-atmosphere', 'anime');
+        try {
+          localStorage.setItem('lose-sea-atmosphere-v2', 'anime');
+          localStorage.setItem('lose-sea-wallpaper', 'auto');
+        } catch (_) {}
+        window.dispatchEvent(new CustomEvent('lose-sea:atmosphere-change'));
+        const label = document.getElementById('atmosphere-label');
+        const dot = document.getElementById('atmosphere-indicator');
+        if (label) label.textContent = '动漫壁纸';
+        if (dot) dot.className = 'w-2 h-2 rounded-full bg-emerald-400';
+      }
+    })();
+  </script>
 </BaseLayout>
